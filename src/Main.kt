@@ -7,7 +7,36 @@ fun main() {
 //    stdinStdout2()
 //    outputFormatting()
 //    loops1()
-    loops2()
+//    loops2()
+    datatypes()
+}
+
+fun datatypes() {
+    val sc = Scanner(System.`in`)
+    val t = sc.nextInt()
+
+    for(i in 1..t){
+        try{
+            val x = sc.nextLong()
+            println("$x can be fitted in:");
+
+            if(x>=Byte.MIN_VALUE && x<=Byte.MAX_VALUE){
+                println("* byte");
+            }
+            if(x>=Short.MIN_VALUE && x<=Short.MAX_VALUE){
+                println("* short");
+            }
+            if(x>=Integer.MIN_VALUE && x<=Integer.MAX_VALUE){
+                println("* int");
+            }
+            if(x>=Long.MIN_VALUE && x<=Long.MAX_VALUE){
+                println("* long");
+            }
+        } catch(e: Exception) {
+            println("${sc.next()} can't be fitted anywhere.")
+        }
+
+    }
 }
 
 fun loops2() {
