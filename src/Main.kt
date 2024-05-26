@@ -8,7 +8,19 @@ fun main() {
 //    outputFormatting()
 //    loops1()
 //    loops2()
-    datatypes()
+//    datatypes()
+    endOfFile()
+}
+
+fun endOfFile() {
+    val sc = Scanner(System.`in`)
+    var i = 1
+
+    while (sc.hasNext()){
+        println("$i ${sc.nextLine()}")
+        i++
+    }
+    sc.close()
 }
 
 fun datatypes() {
@@ -35,8 +47,8 @@ fun datatypes() {
         } catch(e: Exception) {
             println("${sc.next()} can't be fitted anywhere.")
         }
-
     }
+    sc.close()
 }
 
 fun loops2() {
