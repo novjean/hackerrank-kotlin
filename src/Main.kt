@@ -5,7 +5,19 @@ import java.util.*
 fun main() {
     println("HackerRank. lets do this!")
 //    stdinStdout2()
-    outputFormatting()
+//    outputFormatting()
+    loops1()
+}
+
+fun loops1(){
+    val sc = Scanner(System.`in`)
+
+    val n = sc.nextInt()
+
+    for(i in 1..10){
+        println("$n x $i = ${n*i}")
+    }
+
 }
 
 fun outputFormatting() {
