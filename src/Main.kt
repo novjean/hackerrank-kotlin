@@ -6,7 +6,27 @@ fun main() {
     println("HackerRank. lets do this!")
 //    stdinStdout2()
 //    outputFormatting()
-    loops1()
+//    loops1()
+    loops2()
+}
+
+fun loops2() {
+    val sc = Scanner(System.`in`)
+
+    val t = sc.nextInt()
+
+    for(i in 1..t){
+        val a = sc.nextInt()
+        val b = sc.nextInt()
+        val n = sc.nextInt()
+
+        var sum = a
+        for(j in 0..n-1){
+            sum += (Math.pow(2.0, j.toDouble())).toInt() * b
+            print("$sum ")
+        }
+        println()
+    }
 }
 
 fun loops1(){
