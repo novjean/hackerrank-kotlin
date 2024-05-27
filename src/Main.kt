@@ -11,8 +11,28 @@ fun main() {
 //    datatypes()
 //    endOfFile()
 
-    val introBlock = IntroductionStaticInitBlock()
-    introBlock.staticInitializerBlock()
+//    val introBlock = IntroductionStaticInitBlock()
+//    introBlock.staticInitializerBlock()
+
+    intToString()
+}
+
+fun intToString() {
+    try{
+        val sc = Scanner(System.`in`)
+        val n = sc.nextInt()
+        sc.close()
+
+        val s = n.toString()
+
+        if(n == s.toInt()){
+            println("Good job")
+        } else {
+            println("Wrong answer.")
+        }
+    } catch (e : Exception){
+        println("Unsuccessful Termination!!")
+    }
 }
 
 fun endOfFile() {
