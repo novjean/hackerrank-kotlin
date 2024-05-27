@@ -9,7 +9,10 @@ fun main() {
 //    loops1()
 //    loops2()
 //    datatypes()
-    endOfFile()
+//    endOfFile()
+
+    val introBlock = IntroductionStaticInitBlock()
+    introBlock.staticInitializerBlock()
 }
 
 fun endOfFile() {
