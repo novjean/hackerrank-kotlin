@@ -1,6 +1,8 @@
+import java.text.NumberFormat
 import java.time.LocalDate
 import java.time.LocalTime
 import java.util.*
+import javax.swing.text.NumberFormatter
 
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
@@ -17,7 +19,25 @@ fun main() {
 //    introBlock.staticInitializerBlock()
 
 //    intToString()
-    findDay()
+//    findDay()
+    currencyFormatter()
+}
+
+fun currencyFormatter() {
+    val scanner = Scanner(System.`in`);
+    val payment = scanner.nextDouble();
+    scanner.close();
+
+    // Write your code here.
+    val us = NumberFormat.getCurrencyInstance(Locale.US).format(payment)
+    val india = NumberFormat.getCurrencyInstance(Locale("en","in")).format(payment)
+    val china = NumberFormat.getCurrencyInstance(Locale.CHINA).format(payment)
+    val france = NumberFormat.getCurrencyInstance(Locale.FRANCE).format(payment)
+
+    System.out.println("US: " + us);
+    System.out.println("India: " + india);
+    System.out.println("China: " + china);
+    System.out.println("France: " + france);
 }
 
 fun findDay() {
