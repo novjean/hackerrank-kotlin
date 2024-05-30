@@ -1,3 +1,5 @@
+import java.time.LocalDate
+import java.time.LocalTime
 import java.util.*
 
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
@@ -14,7 +16,18 @@ fun main() {
 //    val introBlock = IntroductionStaticInitBlock()
 //    introBlock.staticInitializerBlock()
 
-    intToString()
+//    intToString()
+    findDay()
+}
+
+fun findDay() {
+    val sc = Scanner(System.`in`)
+    val month = sc.nextInt()
+    val day = sc.nextInt()
+    val year = sc.nextInt()
+
+    val date = LocalDate.of(year, month, day)
+    println(date.dayOfWeek.name)
 }
 
 fun intToString() {
