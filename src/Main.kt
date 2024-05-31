@@ -21,8 +21,25 @@ fun main() {
 //    currencyFormatter()
 
     // strings
-    stringsBasics()
+//    stringsBasics()
 
+    // data structures
+    OneDArray()
+
+}
+
+fun OneDArray() {
+    val sc = Scanner(System.`in`)
+    val n = sc.nextInt()
+    val a = IntArray(n)
+
+    for(i in 0..n-1){
+        a[i] = sc.nextInt()
+    }
+
+    for(i in 0..n-1){
+        println(a[i])
+    }
 }
 
 fun stringsBasics() {
