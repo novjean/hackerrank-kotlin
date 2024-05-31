@@ -1,8 +1,6 @@
 import java.text.NumberFormat
 import java.time.LocalDate
-import java.time.LocalTime
 import java.util.*
-import javax.swing.text.NumberFormatter
 
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
@@ -20,13 +18,29 @@ fun main() {
 
 //    intToString()
 //    findDay()
-    currencyFormatter()
+//    currencyFormatter()
+
+    // strings
+    stringsBasics()
+
+}
+
+fun stringsBasics() {
+    val scanner = Scanner(System.`in`)
+    val a = scanner.next()
+    val b = scanner.next()
+    scanner.close()
+
+    println(a.length + b.length)
+    println(if (a.compareTo(b) > 0) "Yes" else "No")
+    println("${a.substring(0,1).uppercase()}${a.substring(1)} ${b.substring(0,1).uppercase()}${b.substring(1)}")
+
 }
 
 fun currencyFormatter() {
-    val scanner = Scanner(System.`in`);
-    val payment = scanner.nextDouble();
-    scanner.close();
+    val scanner = Scanner(System.`in`)
+    val payment = scanner.nextDouble()
+    scanner.close()
 
     // Write your code here.
     val us = NumberFormat.getCurrencyInstance(Locale.US).format(payment)
