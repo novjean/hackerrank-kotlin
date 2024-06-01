@@ -3,6 +3,7 @@ import java.io.InputStreamReader
 import java.text.NumberFormat
 import java.time.LocalDate
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
@@ -28,8 +29,37 @@ fun main() {
 
     // data structures
 //    oneDArray()
-    twoDArray()
+//    twoDArray()
+    subArrayNegatives()
 
+}
+
+fun subArrayNegatives() {
+    val scanner = Scanner(System.`in`)
+    val n = scanner.nextInt()
+    val arr: MutableList<Int> = ArrayList()
+
+    for(i in 0..n-1){
+        arr.add(scanner.nextInt())
+    }
+
+    var negatives = 0
+
+    for(i in 0..n-1){
+        for(j in i..n-1){
+            var currentSum = 0
+
+            for(k in i..j){
+                currentSum += arr.get(k)
+            }
+
+            if(currentSum<0){
+                negatives++
+            }
+        }
+    }
+
+    println(negatives)
 }
 
 fun twoDArray() {
