@@ -1,6 +1,9 @@
+import java.io.BufferedReader
+import java.io.InputStreamReader
 import java.text.NumberFormat
 import java.time.LocalDate
 import java.util.*
+
 
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
@@ -24,11 +27,54 @@ fun main() {
 //    stringsBasics()
 
     // data structures
-    OneDArray()
+//    oneDArray()
+    twoDArray()
 
 }
 
-fun OneDArray() {
+fun twoDArray() {
+    val bufferedReader = BufferedReader(InputStreamReader(System.`in`))
+    val arr: MutableList<MutableList<Int>> = ArrayList()
+
+    for (i in 0..5) {
+        val arrRowTempItems =
+            bufferedReader.readLine().replace("\\s+$".toRegex(), "").split(" ".toRegex()).dropLastWhile { it.isEmpty() }
+                .toTypedArray()
+
+        val arrRowItems: MutableList<Int> = ArrayList()
+
+        for (j in 0..5) {
+            val arrItem = arrRowTempItems[j].toInt()
+            arrRowItems.add(arrItem)
+        }
+
+        arr.add(arrRowItems)
+    }
+
+    bufferedReader.close()
+
+    var maxSum = 0
+    var maxI = 0
+    var maxJ = 0
+
+    for (i in 0..3) {
+        for (j in 0..3) {
+            val sum = arr[i][j] + arr[i][j + 1] + arr[i][j + 2] +
+                    arr[i + 1][j + 1] +
+                    arr[i + 2][j] + arr[i + 2][j + 1] + arr[i + 2][j + 2]
+
+            if (sum > maxSum) {
+                maxSum = sum
+                maxI = i
+                maxJ = j
+            }
+        }
+    }
+
+    println(maxSum)
+}
+
+fun oneDArray() {
     val sc = Scanner(System.`in`)
     val n = sc.nextInt()
     val a = IntArray(n)
