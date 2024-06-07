@@ -3,7 +3,6 @@ import java.io.InputStreamReader
 import java.text.NumberFormat
 import java.time.LocalDate
 import java.util.*
-import kotlin.collections.ArrayList
 
 
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
@@ -30,8 +29,24 @@ fun main() {
     // data structures
 //    oneDArray()
 //    twoDArray()
-    subArrayNegatives()
+//    subArrayNegatives()
 
+    // problem list
+    println(twoSum(intArrayOf(1,3,1,4), 2).contentToString())
+
+}
+
+// https://leetcode.com/problems/two-sum/submissions/1280210991/
+fun twoSum(nums: IntArray, target: Int) : IntArray? {
+    for(i in nums.indices){
+        for(j in i+1 until nums.size){
+            if(nums[i] + nums[j] == target){
+                return intArrayOf(i,j)
+            }
+        }
+    }
+
+    return null
 }
 
 fun subArrayNegatives() {
