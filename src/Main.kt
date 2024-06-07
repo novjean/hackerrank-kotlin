@@ -32,9 +32,28 @@ fun main() {
 
     // problem list
 //    println(twoSum(intArrayOf(1,3,1,4), 2).contentToString())
-    lengthOfLongestSubstring("abccbacbb")
+//    lengthOfLongestSubstring("abccbacbb")
+    findMedianSortedArrays(intArrayOf(1,3), intArrayOf(1,2))
 
 }
+
+// https://leetcode.com/problems/median-of-two-sorted-arrays/description/
+fun findMedianSortedArrays(nums1: IntArray, nums2: IntArray): Double {
+    val mergedArray = nums1.plus(nums2)
+    mergedArray.sort()
+
+    var median = 0.0
+    val half = mergedArray.size / 2
+
+    median = if (mergedArray.size % 2 == 0) {
+        (mergedArray[half - 1] + mergedArray[half]) / 2.0
+    } else {
+        mergedArray[half].toDouble()
+    }
+
+    return median
+}
+
 
 fun lengthOfLongestSubstring(s: String) : Int {
     val set: MutableSet<Char> = HashSet()
