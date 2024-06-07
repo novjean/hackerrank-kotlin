@@ -4,7 +4,6 @@ import java.text.NumberFormat
 import java.time.LocalDate
 import java.util.*
 
-
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 fun main() {
@@ -32,8 +31,32 @@ fun main() {
 //    subArrayNegatives()
 
     // problem list
-    println(twoSum(intArrayOf(1,3,1,4), 2).contentToString())
+//    println(twoSum(intArrayOf(1,3,1,4), 2).contentToString())
+    lengthOfLongestSubstring("abccbacbb")
 
+}
+
+fun lengthOfLongestSubstring(s: String) : Int {
+    val set: MutableSet<Char> = HashSet()
+    var result = 0
+    var left = 0
+    var right = 0
+
+    while (right < s.length) {
+        if (set.contains(s[right])) {
+            set.remove(s[left])
+            left++
+        } else {
+            set.add(s[right])
+            right++
+            if(set.size>result){
+                result = set.size
+            }
+        }
+    }
+
+    println("longest substring size: " + result)
+    return result
 }
 
 // https://leetcode.com/problems/two-sum/submissions/1280210991/
