@@ -7,7 +7,7 @@ import java.util.*
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 fun main() {
-    println("HackerRank. lets do this!")
+    println("Lets go Europe!")
 //    stdinStdout2()
 //    outputFormatting()
 //    loops1()
@@ -33,8 +33,254 @@ fun main() {
     // problem list
 //    println(twoSum(intArrayOf(1,3,1,4), 2).contentToString())
 //    lengthOfLongestSubstring("abccbacbb")
-    findMedianSortedArrays(intArrayOf(1,3), intArrayOf(1,2))
+//    findMedianSortedArrays(intArrayOf(1,3), intArrayOf(1,2))
+//    longestPalindrome("babad")
+//    zigzagConversion("PAYPALISHIRING", 3)
+//    reverseInteger(321)
+    //		stdinStdout();
+//		ifElse();
+//		stdinStdout2();
+//		outputFormatting();
+//		loops1();
+//		loops2();
+//		datatypes();
+//		endOfFile();
 
+//		IntroductionStaticInitBlock initBlock = new IntroductionStaticInitBlock();
+//		initBlock.staticInitializerBlock();
+
+//		intToString();
+//		dateAndTime();
+//		currencyFormatter();
+
+    // Strings
+//		stringsIntro();
+
+    // Data structures
+//		OneDArray();
+//		TwoDArray();
+//		subArrayFindNegative();
+//        arraylistSearch();
+
+    // problem list
+//        addTwoNumbers();
+//        twoSum(new int[]{1,2,1,3}, 2);
+//        lengthOfLongestSubstring("abcaabcc");
+//        findMedianSortedArrays(new int[]{1,3}, new int[] {2});
+//        longestPalindromicSubstring("bb");
+//        longestPalindrome("babad");
+//        zigzagConversion("PAYPALISHIRING",3);
+//        reverseInteger(-123);
+//        reverseInteger2(123);
+//        stringToInteger(" -123")
+//    isNumberPalindrome(12321)
+    maxArea(intArrayOf(1,8,6,2,5,4,8,3,7))
+}
+
+// https://leetcode.com/problems/container-with-most-water/description/
+fun maxArea(heights: IntArray): Int {
+    var left = 0
+    var right = heights.size-1
+    var max = 0
+
+    while(left<right){
+        val width = right-left
+        val height = Math.min(heights[left], heights[right])
+        val area = width * height
+        max = Math.max(max, area)
+
+        if(heights[left]<heights[right]){
+            left++
+        } else if(heights[right]<heights[left]){
+            right--
+        }else {
+            left++
+            right--
+        }
+    }
+    return max
+}
+
+// https://leetcode.com/problems/palindrome-number/
+fun isNumberPalindrome(x: Int): Boolean {
+    var num = x
+    var reverse = 0
+
+    while(x>0){
+        val last = num%10
+        reverse += reverse*10 +last
+
+        num= num/10
+    }
+    return reverse==x
+}
+
+// https://leetcode.com/problems/string-to-integer-atoi/
+fun stringToInteger(str: String): Int {
+    var s:String = str.trim()
+    var num:Long = 0
+    var nums = StringBuilder()
+    var isNeg = false
+
+
+    for(i in 0..s.length-1){
+        if(i==0){
+            if(s[i] == '-'){
+                isNeg = true;
+            } else if(s[i] == '+'){
+                isNeg = false;
+            } else {
+                if(s[i].isDigit()){
+                    nums.append(s[i])
+                } else {
+                    break
+                }
+            }
+        } else {
+            if(s[i].isDigit()){
+                nums.append(s[i])
+            } else {
+                break
+            }
+        }
+    }
+
+    if(nums.isNotEmpty()){
+        try{
+            num = nums.toString().toLong()
+        } catch(e:NumberFormatException){
+            if(isNeg){
+                return Integer.MIN_VALUE
+            } else {
+                return Integer.MAX_VALUE
+            }
+        }
+    } else {
+        return 0
+    }
+
+    if(isNeg){
+        num = num *-1
+    }
+
+    if(num>Integer.MAX_VALUE){
+        return Integer.MAX_VALUE
+    }
+    if(num<Integer.MIN_VALUE){
+        return Integer.MIN_VALUE
+    }
+
+    println("string to int: $num")
+    return num.toInt()
+}
+
+
+///////////////////////////
+
+// https://leetcode.com/problems/reverse-integer/
+fun reverseInteger(num: Int):Int{
+    var reversed = 0
+    val sign = if (num < 0) -1 else 1
+    var temp = num
+    if (num < 0){
+        temp = num * -1
+    }
+
+    while(temp>0){
+        val last = temp%10
+        temp = temp/10
+
+        if(reversed>(Integer.MAX_VALUE-last)/10){
+            return 0
+        }
+        reversed = reversed*10 + last
+    }
+    val result = reversed*sign
+    println("reversed is $result")
+    return result
+}
+
+fun reverseInteger2(x: Int) : Int{
+    val value = if(x<0) (x*-1).toString() else x.toString()
+    var reverse = (if(x<0) "-" else "") + value.reversed()
+    return reverse.toIntOrNull()?: 0
+}
+
+////////////////////
+
+fun zigzagConversion(s: String, numRows: Int) : String {
+    if(numRows==1 || numRows>=s.length){
+        return s
+    }
+
+    var rowIndex = 0
+    var direction = 1
+    val rows: Array<MutableList<Char>> = Array(numRows) { ArrayList() }
+
+    for(i in 0..numRows-1){
+        rows[i] = ArrayList<Char>()
+    }
+
+    for(c in s.toCharArray()){
+        rows[rowIndex].add(c)
+
+        if(rowIndex == 0){
+            direction = 1
+        }
+        if(rowIndex == numRows-1){
+            direction = -1
+        }
+        rowIndex += direction
+    }
+
+    var result = ""
+
+    for(row in rows){
+        for(c in row){
+            result += c
+        }
+    }
+    println("zigzag is $result")
+    return result
+}
+
+// https://leetcode.com/problems/longest-palindromic-substring/
+fun longestPalindrome(s: String) : String {
+    var result = ""
+
+    if(s.length==1){
+        return s
+    }
+
+    for(i in 0..s.length-1){
+        for(j in i..s.length){
+            val sub = s.substring(i,j)
+
+            if(isPalindrome(sub)){
+                if(sub.length>result.length){
+                    result= sub
+                }
+            }
+        }
+    }
+
+    println("longest palindrome: $result")
+    return result
+}
+
+fun isPalindrome(sub: String): Boolean {
+    var left = 0
+    var right = sub.length-1
+
+    while(left<right){
+        if(sub[left]==sub[right]){
+            left++
+            right--
+        } else {
+            return false
+        }
+    }
+    return true
 }
 
 // https://leetcode.com/problems/median-of-two-sorted-arrays/description/
