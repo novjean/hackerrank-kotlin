@@ -74,7 +74,125 @@ fun main() {
 //        reverseInteger2(123);
 //        stringToInteger(" -123")
 //    isNumberPalindrome(12321)
-    maxArea(intArrayOf(1,8,6,2,5,4,8,3,7))
+//    maxArea(intArrayOf(1,8,6,2,5,4,8,3,7))
+//    integerToRoman(3749)
+//    threeSum(intArrayOf(1,8,6,2,5,4,8,3,7))
+    firstOccurenceString("sadbutsad","sad")
+}
+
+// https://leetcode.com/problems/find-the-index-of-the-first-occurrence-in-a-string/
+fun firstOccurenceString(haystack: String, needle: String): Int {
+    for(i in 0..haystack.length-needle.length){
+        val w = haystack.substring(i, i+needle.length)
+        if(w.equals(needle)){
+            return i
+        }
+    }
+    return -1
+}
+
+// https://leetcode.com/problems/3sum/description/
+fun threeSum(numbers: IntArray): List<List<Int>> {
+    val target = 0
+    var nums = numbers
+    nums.sort()
+
+    var s: MutableSet<List<Int>> = HashSet()
+    var output: MutableList<List<Int>> = ArrayList()
+
+    for (i in 0..nums.size-2) {
+        var j = i + 1
+
+        var k = nums.size - 1
+
+        while (j < k) {
+            val sum = nums[i] + nums[j] + nums[k]
+            if (sum == target) {
+                s.add(Arrays.asList(nums[i], nums[j], nums[k]))
+                j++
+                k--
+            } else if (sum < target) {
+                j++
+            } else {
+                k--
+            }
+        }
+    }
+
+    output.addAll(s)
+    return output
+}
+
+//
+fun integerToRoman(number: Int): String {
+    var num = number
+    var result : StringBuilder = StringBuilder()
+
+    var mCount = num/1000;
+    while(mCount>0){
+        result = result.append("M")
+        num = num-1000
+        mCount--
+    }
+
+    val dCount = num/100
+    if(dCount>=1 && dCount<=3){
+        for(i in 1..dCount){
+            result = result.append("C")
+        }
+    } else if(dCount == 4){
+        result = result.append("CD")
+    } else if(dCount == 5){
+        result = result.append("D")
+    } else if(dCount >= 6 && dCount<=8){
+        result = result.append("D")
+        for(i in 1..dCount-5){
+            result = result.append("C")
+        }
+    } else if(dCount == 9){
+        result = result.append("CM")
+    }
+
+    num = num - (100*dCount)
+
+    val xCount = num/10
+    if(xCount>=1 && xCount<=3){
+        for(i in 1..xCount){
+            result = result.append("X")
+        }
+    } else if(xCount == 4){
+        result = result.append("XL")
+    } else if(xCount == 5){
+        result = result.append("L")
+    } else if(xCount >= 6 && xCount<=8){
+        result = result.append("L")
+        for(i in 1..xCount-5){
+            result = result.append("X")
+        }
+    } else if(xCount == 9){
+        result = result.append("XC")
+    }
+
+    num = num - (10*xCount)
+
+    if(num>=1 && num<=3){
+        for(i in 1..num){
+            result = result.append("I")
+        }
+    } else if(num == 4){
+        result = result.append("IV")
+    } else if(num == 5){
+        result = result.append("V")
+    } else if(num >= 6 && num<=8){
+        result = result.append("V")
+        for(i in 1..num-5){
+            result = result.append("I")
+        }
+    } else if(num == 9){
+        result = result.append("IX")
+    }
+
+    return result.toString()
 }
 
 // https://leetcode.com/problems/container-with-most-water/description/
