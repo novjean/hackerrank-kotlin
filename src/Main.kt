@@ -77,8 +77,96 @@ fun main() {
 //    maxArea(intArrayOf(1,8,6,2,5,4,8,3,7))
 //    integerToRoman(3749)
 //    threeSum(intArrayOf(1,8,6,2,5,4,8,3,7))
-    firstOccurenceString("sadbutsad","sad")
+//    firstOccurenceString("sadbutsad","sad")
+//    mergeTwoLists()
+//    removeNthFromEnd()
 }
+
+// https://leetcode.com/problems/longest-common-prefix/
+private fun longestCommonPrefix(words: Array<String>): String {
+    words.sort()
+
+    var first = words[0]
+    var last = words[words.size-1]
+    var idx = 0
+
+    while(idx<first.length && idx<last.length){
+        if(first[idx] == last[idx]){
+            idx++
+        } else {
+            break
+        }
+    }
+    return first.substring(0,idx)
+}
+
+fun romanToInt(s: String): Int {
+    val m = mutableMapOf<Char, Int>()
+    m['I'] = 1
+    m['V'] = 5
+    m['X'] = 10
+    m['L'] = 50
+    m['C'] = 100
+    m['D'] = 500
+    m['M'] = 1000
+
+    var ans = 0
+
+    for(i in 0..s.length-1){
+        if (i < s.length - 1 && m[s[i]]!! < m[s[i + 1]]!!) {
+            ans -= m[s[i]]!!
+        } else {
+            ans += m[s[i]]!!
+        }
+    }
+
+    return ans
+}
+
+fun removeNthFromEnd(head: ListNode?, n: Int): ListNode? {
+    var fast = head
+    var slow = head
+
+    for(i in 1..n){
+        fast = fast!!.next
+    }
+
+    if(fast == null){
+        return head
+    }
+
+    while(fast!!.next!=null){
+        fast = fast!!.next
+        slow = slow!!.next
+    }
+
+    slow!!.next = slow!!.next!!.next
+    return head
+}
+
+// https://leetcode.com/problems/merge-two-sorted-lists/
+class ListNode(var `val`: Int) {
+    var next: ListNode? = null
+}
+
+fun mergeTwoLists(l1: ListNode?, l2: ListNode?): ListNode? {
+    if(l1 != null && l2!=null){
+        if(l1.`val`<l2.`val`){
+            l1.next = mergeTwoLists(l1.next, l2)
+            return l1
+        } else {
+            l2.next = mergeTwoLists(l1, l2.next)
+            return l2
+        }
+    }
+
+    if(l1 == null){
+        return l2
+    } else {
+        return l1
+    }
+}
+
 
 // https://leetcode.com/problems/find-the-index-of-the-first-occurrence-in-a-string/
 fun firstOccurenceString(haystack: String, needle: String): Int {
