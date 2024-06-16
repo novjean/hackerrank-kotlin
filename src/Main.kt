@@ -80,7 +80,38 @@ fun main() {
 //    firstOccurenceString("sadbutsad","sad")
 //    mergeTwoLists()
 //    removeNthFromEnd()
+//    romanToInt
+//    longestCommonPrefix
+//    threeSumClosest
 }
+
+// https://leetcode.com/problems/3sum-closest/
+fun threeSumClosest(nums: IntArray, target: Int): Int {
+    Arrays.sort(nums)
+
+    var closestSum = nums[0]+nums[1]+nums[2]
+
+    for(i in 0..nums.size-2){
+        var j = i+1
+        var k = nums.size-1
+
+        while(j<k){
+            var sum = nums[i]+nums[j]+nums[k]
+
+            if(Math.abs(target-sum) < Math.abs(target - closestSum)){
+                closestSum = sum
+            }
+
+            if(sum<target){
+                j++
+            } else
+                k--
+        }
+    }
+
+    return closestSum
+}
+
 
 // https://leetcode.com/problems/longest-common-prefix/
 private fun longestCommonPrefix(words: Array<String>): String {
