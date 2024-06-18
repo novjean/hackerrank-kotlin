@@ -3,6 +3,7 @@ import java.io.InputStreamReader
 import java.text.NumberFormat
 import java.time.LocalDate
 import java.util.*
+import kotlin.collections.ArrayList
 
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
@@ -83,6 +84,51 @@ fun main() {
 //    romanToInt
 //    longestCommonPrefix
 //    threeSumClosest
+    fourSum(intArrayOf(-2,2,1,0,1,-1,2), 0)
+}
+
+// https://leetcode.com/problems/4sum/
+// time complexity O(n3)
+// space complexity O(k) where k is the number of unique quadruplets found, worst case O(n4)
+fun fourSum(nums: IntArray, target: Int): List<List<Int>> {
+    Arrays.sort(nums)
+
+    var set : MutableSet<List<Int>> = HashSet()
+    var result : MutableList<List<Int>> = ArrayList()
+
+    for(a in 0..nums.size-1){
+        var d = nums.size-1
+
+        while(d>a+2){
+            var b = a+1
+            var c = d-1;
+
+            while(b<c){
+                val sumL = nums[a].toLong() + nums[b].toLong() + nums[c].toLong() + nums[d].toLong()
+
+                if(sumL>Int.MAX_VALUE || sumL<Int.MIN_VALUE){
+                    b++
+                    c--
+                    continue
+                }
+
+                if(sumL.toInt() == target){
+                    val list : List<Int> = listOf(nums[a],nums[b],nums[c],nums[d])
+                    set.add(list)
+                    b++
+                    c--
+                } else if(sumL.toInt()<target){
+                    b++
+                } else {
+                    c--
+                }
+            }
+            d--
+        }
+    }
+    result.addAll(set)
+
+    return result
 }
 
 // https://leetcode.com/problems/3sum-closest/
@@ -154,6 +200,9 @@ fun romanToInt(s: String): Int {
     return ans
 }
 
+// https://leetcode.com/problems/remove-nth-node-from-end-of-list/
+// time complexity O(L) where L is the length of the linked list
+// space complexity O(1), no additional data structures or recursive call
 fun removeNthFromEnd(head: ListNode?, n: Int): ListNode? {
     var fast = head
     var slow = head
