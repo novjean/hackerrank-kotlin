@@ -85,7 +85,145 @@ fun main() {
 //    longestCommonPrefix
 //    threeSumClosest
 //    fourSum(intArrayOf(-2,2,1,0,1,-1,2), 0)
-    generateParenthesis(3)
+//    generateParenthesis(3)
+//        swapPairs()
+}
+
+// https://leetcode.com/problems/remove-element/
+fun removeElement(nums: IntArray, `val`: Int): Int{
+    var k = 0
+
+    for(i in 0 until nums.size){
+        if(nums[i]!=`val`){
+            nums[k] = nums[i]
+            k++
+        }
+    }
+    return k
+}
+
+// https://leetcode.com/problems/remove-duplicates-from-sorted-array/
+// time O(n)
+// space O(n) with distinct as distinct creates hashset
+// space O(1) with two pointer
+fun removeDuplicates(nums: IntArray): Int {
+//    return nums.distinct().let{
+//        it.forEachIndexed{index, value -> nums[index] = value}
+//        it.size
+//    }
+
+    if(nums.isEmpty()){
+        return 0
+    }
+    var j=0
+    for(i in 1 until nums.size){
+        if(nums[i] != nums[j]){
+            j++
+            nums[j] = nums[i]
+        }
+    }
+    return j+1
+}
+
+// https://leetcode.com/problems/reverse-nodes-in-k-group/
+fun reverseKGroup(head: ListNode?, k: Int):ListNode? {
+    var temp = head
+
+    for(i in 0 until k){
+        if(temp == null){
+            return head
+        } else {
+            temp = temp.next
+        }
+    }
+
+    var nextNewStart = reverseKGroup(temp, k)
+
+    var prev : ListNode? = ListNode(0)
+    prev = head
+    var curr = prev
+
+    for(i in 0 until k){
+        var next = curr!!.next
+        curr.next = prev
+        prev = curr
+        curr = next
+    }
+    head!!.next = nextNewStart
+    return prev
+
+}
+
+// https://leetcode.com/problems/swap-nodes-in-pairs/
+// time O(n)
+// space O(1)
+fun swapPairs(head: ListNode?): ListNode?{
+    if(head == null || head.next==null){
+        return head
+    }
+
+    val res = ListNode(0)
+    res.next = head
+    var curr : ListNode? = res
+
+    while(curr?.next != null && curr.next?.next != null){
+        var t1 = curr.next
+        var t2 = curr.next?.next
+
+        curr.next = t2
+        t1?.next = t2?.next
+        t2?.next= t1
+        curr = curr.next?.next
+    }
+    return res.next
+}
+
+// https://leetcode.com/problems/merge-k-sorted-lists/
+// time O(n log k)
+// space O(log k)
+fun mergeKLists(lists: Array<ListNode?>): ListNode? {
+    if(lists.isEmpty()){
+        return ListNode(0).next
+    }
+
+    return mergeKListsHelper(lists, 0, lists.size-1)
+}
+
+fun mergeKListsHelper(lists: Array<ListNode?>, start: Int, end: Int) : ListNode? {
+    if(start == end){
+        return lists[start]
+    }
+
+    val mid = (start+end)/2
+    var left = mergeKListsHelper(lists, start, mid)
+    var right= mergeKListsHelper(lists, mid+1, end)
+    return merge(left, right)
+}
+
+fun merge(list1: ListNode?, list2: ListNode?): ListNode?{
+    var head: ListNode? = ListNode(0)
+    var curr: ListNode? = head
+    var l1 = list1
+    var l2 = list2
+
+    while(l1!=null && l2!=null){
+        if(l1.`val`<l2.`val`){
+            curr!!.next = l1
+            l1 = l1.next
+        } else {
+            curr!!.next = l2
+            l2 = l2.next
+        }
+        curr = curr!!.next
+    }
+
+    if(l1!=null){
+        curr!!.next = l1
+    }
+    if(l2!=null){
+        curr!!.next = l2
+    }
+    return head!!.next
 }
 
 // https://leetcode.com/problems/generate-parentheses/
