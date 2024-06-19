@@ -87,6 +87,27 @@ fun main() {
     fourSum(intArrayOf(-2,2,1,0,1,-1,2), 0)
 }
 
+// https://leetcode.com/problems/valid-parentheses/
+// time : O(n) where n is the length of the string
+// space: O(n) as the worse case iss all characters could be open brackets
+// and thereby the length of the string
+fun isValidParanthese(s: String): Boolean {
+    val stack = mutableListOf<Char>()
+
+    for(char in s){
+        when(char){
+            '(', '{','[' -> stack.add(char)
+            ')' -> if(stack.isEmpty() || stack.removeAt(stack.size-1) != '(')
+                return false
+            '}' -> if(stack.isEmpty() || stack.removeAt(stack.size-1) != '{')
+                return false
+            ']' -> if(stack.isEmpty() || stack.removeAt(stack.size-1) != '[')
+                return false
+        }
+    }
+    return stack.isEmpty()
+}
+
 // https://leetcode.com/problems/4sum/
 // time complexity O(n3)
 // space complexity O(k) where k is the number of unique quadruplets found, worst case O(n4)
