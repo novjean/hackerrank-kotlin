@@ -84,7 +84,31 @@ fun main() {
 //    romanToInt
 //    longestCommonPrefix
 //    threeSumClosest
-    fourSum(intArrayOf(-2,2,1,0,1,-1,2), 0)
+//    fourSum(intArrayOf(-2,2,1,0,1,-1,2), 0)
+    generateParenthesis(3)
+}
+
+// https://leetcode.com/problems/generate-parentheses/
+// time complexity: since this is recursive, it is catalan number of n
+fun generateParenthesis(n: Int): List<String> {
+    var res: MutableList<String> = mutableListOf()
+    recurse(res, 0, 0, "", n)
+    return res
+}
+
+fun recurse(res: MutableList<String>, left: Int, right: Int, s: String, n: Int) {
+    if(s.length == 2 *n){
+        res.add(s)
+        return
+    }
+
+    if(left<n){
+        recurse(res, left+1, right, s+"(", n)
+    }
+
+    if(right<left){
+        recurse(res, left, right+1, s+")", n)
+    }
 }
 
 // https://leetcode.com/problems/valid-parentheses/
