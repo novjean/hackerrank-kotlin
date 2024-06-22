@@ -93,7 +93,114 @@ fun main() {
 //    searchInsert(intArrayOf(3,4,5,9), 8)
 //    isValidSudoku()
 //    countAndSay(4)
+    combinationSum(intArrayOf(2,3,6,7), 7)
+}
 
+// sudoku solver
+fun solveSudoku(board: Array<CharArray>) : Unit {
+    helper(board,0,0)
+}
+
+fun helper(board: Array<CharArray>, currentRow : Int, currentColumn:Int) : Boolean{
+    var row = currentRow
+    var column = currentColumn
+
+    if(column == 9){
+        // moving to the next row and starting from the beginning
+        row++
+        column = 0
+
+        if(row == 9){
+            // finished solving the sudoku board
+            return true
+        }
+    }
+
+    if(board[row][column] == '.'){
+        return tryPossibleDigits(board, row, column)
+    }
+    return helper(board, row, column+1)
+}
+
+fun tryPossibleDigits(board: Array<CharArray>,
+                      row: Int = 0,
+                      column: Int = 0): Boolean {
+    for(digit in '1'..'9') {
+        if(isValidAtPosition(board, row, column, digit)){
+            board[row][column] = digit
+            if(helper(board, row, column+1)) {
+                return true
+            }
+        }
+    }
+    board[row][column] = '.'
+    return false
+}
+
+fun isValidAtPosition(board: Array<CharArray>,
+                      row: Int,
+                      column: Int,
+                      digit: Char): Boolean {
+    var rowValid = !board[row].contains(digit)
+    // map function is used to transform each element of the board
+    // for each row bRow, extracts the element at the column index
+    // lambda function takes each rown and returs element at column
+    var columnValid = !board.map { bRow -> bRow[column] }.contains(digit)
+    if(!rowValid || !columnValid) return false
+
+    val subGridRow = row -row%3
+    val subGridCol = column - column%3
+
+    for(i in 0 until 3){
+        for(j in 0 until 3){
+            val sRow = subGridRow + i
+            val sCol = subGridCol + j
+            if(digit == board[sRow][sCol]) {
+                return false
+            }
+        }
+    }
+    return true
+}
+
+//
+// time
+// space
+
+
+// https://leetcode.com/problems/combination-sum/
+// time O(2^n) // n is number of candidates, exponential number of combinations
+// space O(target)
+fun combinationSum(candidates: IntArray, target: Int): List<List<Int>> {
+    val currentSet: MutableList<Int> = mutableListOf<Int>()
+    val combinations = mutableListOf<MutableList<Int>>()
+
+    backtrack(candidates, target, 0, 0, currentSet, combinations)
+
+    return combinations
+}
+
+fun backtrack(candidates: IntArray,
+              target: Int,
+              index: Int,
+              runningSum: Int,
+              currentSet: MutableList<Int>,
+              combinations: MutableList<MutableList<Int>>) {
+    if(runningSum == target){
+        combinations.add(currentSet.toMutableList())
+        return
+    }
+
+    if(index>=candidates.size || runningSum>target){
+        return
+    }
+
+    currentSet.add(candidates[index])
+    backtrack(candidates,target, index,
+        runningSum+candidates[index], currentSet, combinations)
+    currentSet.removeLast()
+    backtrack(candidates, target, index+1,
+        runningSum, currentSet, combinations)
 }
 
 // https://leetcode.com/problems/count-and-say/
