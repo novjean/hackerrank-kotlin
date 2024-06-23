@@ -96,12 +96,52 @@ fun main() {
 //    isValidSudoku()
 //    countAndSay(4)
 //    combinationSum(intArrayOf(2,3,6,7), 7)
-//    solveSudoku() 
+//    solveSudoku()
 //    longestSubarray(intArrayOf(8, 2, 4, 7), 4)
 //    majorityElement(intArrayOf(3,2,3))
-    rotate(intArrayOf(-1), 2)
+//    rotate(intArrayOf(-1), 2)
+    isPalindrome2("A man, a plan, a canal: Panama")
 }
 
+// https://leetcode.com/problems/valid-palindrome/?envType=study-plan-v2&envId=top-interview-150
+fun isPalindrome2(s: String): Boolean {
+    val len = s.length
+    var j = len - 1
+    var ch = ' '
+    var ch2 = ' '
+
+    for (i in 0 until len) {
+        ch = s[i]
+        if (!(ch in 'a'..'z' ||
+                    ch in 'A'..'Z' ||
+                    ch in '0'..'9')
+        )
+            continue
+        if (ch in 'A'..'Z')
+            ch = ch.lowercaseChar()
+
+        while (i <= j) {
+            ch2 = s[j]
+            if (!(ch2 in 'a'..'z' ||
+                        ch2 in 'A'..'Z' ||
+                        ch2 in '0'..'9')
+            ) {
+                j--
+                continue
+            }
+            if (ch2 in 'A'..'Z')
+                ch2 = ch2.lowercaseChar()
+            j--
+            break
+        }
+
+        if (i > j && ch == ch2)
+            return true
+        if (ch != ch2)
+            return false
+    }
+    return true
+}
 
 // https://leetcode.com/problems/rotate-array/
 // time O(n)
@@ -110,21 +150,21 @@ fun rotate(nums: IntArray, k: Int): Unit {
     var n = nums.size
     var k1 = k
     var res = IntArray(nums.size)
-    var j=0
+    var j = 0
 
-    if(k1>n){
-        k1 = k1%n
+    if (k1 > n) {
+        k1 = k1 % n
     }
 
-    for(i in n-k1 until nums.size){
+    for (i in n - k1 until nums.size) {
         res[j++] = nums[i]
     }
 
-    for(i in 0 until n-k1){
+    for (i in 0 until n - k1) {
         res[j++] = nums[i]
     }
 
-    for(i in 0 until n){
+    for (i in 0 until n) {
         nums[i] = res[i]
     }
 }
@@ -132,10 +172,10 @@ fun rotate(nums: IntArray, k: Int): Unit {
 // https://leetcode.com/problems/majority-element/s
 // time O(n)
 // space O(n)
-fun majorityElement(nums:IntArray): Int{
+fun majorityElement(nums: IntArray): Int {
     var occ = HashMap<Int, Int>()
     nums.forEach {
-        occ.put(it, occ.getOrDefault(it, 0)+1)
+        occ.put(it, occ.getOrDefault(it, 0) + 1)
     }
     return occ.maxBy { it.value }.key
 }
@@ -144,7 +184,7 @@ fun majorityElement(nums:IntArray): Int{
 // time O(nlogn)
 // spaceO(log n)
 fun majorityElement2(nums: IntArray): Int {
-    if(nums.isEmpty()){
+    if (nums.isEmpty()) {
         return 0
     }
 
@@ -155,15 +195,15 @@ fun majorityElement2(nums: IntArray): Int {
     var res = num
     var resCount = 1
 
-    for(i in 1 until nums.size){
-        if(num == nums[i]){
+    for (i in 1 until nums.size) {
+        if (num == nums[i]) {
             count++
         } else {
             num = nums[i]
-            count =1
+            count = 1
         }
 
-        if(count>resCount){
+        if (count > resCount) {
             resCount = count
             res = num
         }
@@ -176,14 +216,14 @@ fun majorityElement2(nums: IntArray): Int {
 // time O(n)
 // space O(1)
 fun removeDuplicates2(nums: IntArray): Int {
-    if(nums.size == 0)
+    if (nums.size == 0)
         return 0
 
     var j = 1
 
-    for(i in 2 until nums.size){
-        if(nums[j] == nums[i]){
-            if(nums[j] == nums[j-1]){
+    for (i in 2 until nums.size) {
+        if (nums[j] == nums[i]) {
+            if (nums[j] == nums[j - 1]) {
                 // two entered
                 continue
             } else {
@@ -193,7 +233,7 @@ fun removeDuplicates2(nums: IntArray): Int {
             nums[++j] = nums[i]
         }
     }
-    return j+1
+    return j + 1
 }
 
 
@@ -201,12 +241,12 @@ fun removeDuplicates2(nums: IntArray): Int {
 // time O(m+n)
 // space O(1)
 fun mergeSortedArray(nums1: IntArray, m: Int, nums2: IntArray, n: Int): Unit {
-    var i = m-1
-    var j = n-1
-    var k = m+n-1
+    var i = m - 1
+    var j = n - 1
+    var k = m + n - 1
 
-    while(j<=0){
-        if(i<0 || nums2[j] > nums1[i]){
+    while (j <= 0) {
+        if (i < 0 || nums2[j] > nums1[i]) {
             nums1[k] = nums2[j]
             k--
             j--
@@ -258,38 +298,40 @@ fun longestSubarray(nums: IntArray, limit: Int): Int {
 
 
 // sudoku solver
-fun solveSudoku(board: Array<CharArray>) : Unit {
-    helper(board,0,0)
+fun solveSudoku(board: Array<CharArray>): Unit {
+    helper(board, 0, 0)
 }
 
-fun helper(board: Array<CharArray>, currentRow : Int, currentColumn:Int) : Boolean{
+fun helper(board: Array<CharArray>, currentRow: Int, currentColumn: Int): Boolean {
     var row = currentRow
     var column = currentColumn
 
-    if(column == 9){
+    if (column == 9) {
         // moving to the next row and starting from the beginning
         row++
         column = 0
 
-        if(row == 9){
+        if (row == 9) {
             // finished solving the sudoku board
             return true
         }
     }
 
-    if(board[row][column] == '.'){
+    if (board[row][column] == '.') {
         return tryPossibleDigits(board, row, column)
     }
-    return helper(board, row, column+1)
+    return helper(board, row, column + 1)
 }
 
-fun tryPossibleDigits(board: Array<CharArray>,
-                      row: Int = 0,
-                      column: Int = 0): Boolean {
-    for(digit in '1'..'9') {
-        if(isValidAtPosition(board, row, column, digit)){
+fun tryPossibleDigits(
+    board: Array<CharArray>,
+    row: Int = 0,
+    column: Int = 0
+): Boolean {
+    for (digit in '1'..'9') {
+        if (isValidAtPosition(board, row, column, digit)) {
             board[row][column] = digit
-            if(helper(board, row, column+1)) {
+            if (helper(board, row, column + 1)) {
                 return true
             }
         }
@@ -298,25 +340,27 @@ fun tryPossibleDigits(board: Array<CharArray>,
     return false
 }
 
-fun isValidAtPosition(board: Array<CharArray>,
-                      row: Int,
-                      column: Int,
-                      digit: Char): Boolean {
+fun isValidAtPosition(
+    board: Array<CharArray>,
+    row: Int,
+    column: Int,
+    digit: Char
+): Boolean {
     var rowValid = !board[row].contains(digit)
     // map function is used to transform each element of the board
     // for each row bRow, extracts the element at the column index
     // lambda function takes each rown and returs element at column
     var columnValid = !board.map { bRow -> bRow[column] }.contains(digit)
-    if(!rowValid || !columnValid) return false
+    if (!rowValid || !columnValid) return false
 
-    val subGridRow = row -row%3
-    val subGridCol = column - column%3
+    val subGridRow = row - row % 3
+    val subGridCol = column - column % 3
 
-    for(i in 0 until 3){
-        for(j in 0 until 3){
+    for (i in 0 until 3) {
+        for (j in 0 until 3) {
             val sRow = subGridRow + i
             val sCol = subGridCol + j
-            if(digit == board[sRow][sCol]) {
+            if (digit == board[sRow][sCol]) {
                 return false
             }
         }
@@ -337,41 +381,47 @@ fun combinationSum(candidates: IntArray, target: Int): List<List<Int>> {
     return combinations
 }
 
-fun backtrack(candidates: IntArray,
-              target: Int,
-              index: Int,
-              runningSum: Int,
-              currentSet: MutableList<Int>,
-              combinations: MutableList<MutableList<Int>>) {
-    if(runningSum == target){
+fun backtrack(
+    candidates: IntArray,
+    target: Int,
+    index: Int,
+    runningSum: Int,
+    currentSet: MutableList<Int>,
+    combinations: MutableList<MutableList<Int>>
+) {
+    if (runningSum == target) {
         combinations.add(currentSet.toMutableList())
         return
     }
 
-    if(index>=candidates.size || runningSum>target){
+    if (index >= candidates.size || runningSum > target) {
         return
     }
 
     currentSet.add(candidates[index])
-    backtrack(candidates,target, index,
-        runningSum+candidates[index], currentSet, combinations)
+    backtrack(
+        candidates, target, index,
+        runningSum + candidates[index], currentSet, combinations
+    )
     currentSet.removeLast()
-    backtrack(candidates, target, index+1,
-        runningSum, currentSet, combinations)
+    backtrack(
+        candidates, target, index + 1,
+        runningSum, currentSet, combinations
+    )
 }
 
 // https://leetcode.com/problems/count-and-say/
 // time O(2^n) // growing exponentially
 // space O(2^n) // growing exponentially over each sequence
-fun countAndSay(n:Int) :String{
-    fun next(s: String): String{
+fun countAndSay(n: Int): String {
+    fun next(s: String): String {
         var count = 0;
         var i = 0
         var res = ""
 
-        while(i<s.length){
+        while (i < s.length) {
             count = 1
-            while(i+1<s.length && s[i] == s[i+1]){
+            while (i + 1 < s.length && s[i] == s[i + 1]) {
                 count++
             }
             res = "$count${s[i++]}"
@@ -391,12 +441,13 @@ fun countAndSay(n:Int) :String{
 fun isValidSudoku(board: Array<CharArray>): Boolean {
     var seen = HashSet<String>()
 
-    for(i in 0 until 9){
-        for(j in 0 until 9){
+    for (i in 0 until 9) {
+        for (j in 0 until 9) {
             val number = board[i][j]
-            if(!seen.add("$number in row $i") ||
+            if (!seen.add("$number in row $i") ||
                 !seen.add("$number in column $j") ||
-                !seen.add("$number in block {$i/3}-{$j/3}"))
+                !seen.add("$number in block {$i/3}-{$j/3}")
+            )
                 return false
         }
     }
@@ -411,12 +462,12 @@ fun searchInsert(nums: IntArray, target: Int): Int {
     var l = 0
     var r = nums.lastIndex
 
-    while(l<=r){
-        var m = l+(r-l)/2
+    while (l <= r) {
+        var m = l + (r - l) / 2
 
-        if(target == nums[m]){
+        if (target == nums[m]) {
             return m
-        } else if(target<nums[m]){
+        } else if (target < nums[m]) {
             r = m - 1
         } else {
             l = m + 1
@@ -430,19 +481,19 @@ fun searchInsert(nums: IntArray, target: Int): Int {
 // time O(n logn) this is if worst case and we end up doing binary search on all indexes
 // space (O(1)
 fun searchRange(nums: IntArray, target: Int): IntArray {
-    var result = intArrayOf(-1,-1)
+    var result = intArrayOf(-1, -1)
 
     var first = nums.binarySearch(target, 0, nums.size)
     var last = first
 
-    while(first>=0){
+    while (first >= 0) {
         result[0] = first
-        first = nums.binarySearch(target,0,first)
+        first = nums.binarySearch(target, 0, first)
     }
 
-    while(last>=0){
+    while (last >= 0) {
         result[1] = last
-        last = nums.binarySearch(target, last+1, nums.size)
+        last = nums.binarySearch(target, last + 1, nums.size)
         println("last : $last")
     }
 
@@ -457,22 +508,22 @@ fun binarySearchOnPivotSortedArray(nums: IntArray, target: Int): Int {
     var l = 0
     var r = nums.lastIndex
 
-    while(l<r){
-        var m = l + (r-l)/2
+    while (l < r) {
+        var m = l + (r - l) / 2
 
-        if(nums[m]==target) return m
+        if (nums[m] == target) return m
 
-        if(nums[m]<= nums[r]){ //checking if the array is sorted half
-            if(target> nums[m] && target<= nums[r]){
-                l = m+1
+        if (nums[m] <= nums[r]) { //checking if the array is sorted half
+            if (target > nums[m] && target <= nums[r]) {
+                l = m + 1
             } else {
-                r = m-1
+                r = m - 1
             }
         } else {
-            if(target>= nums[l] && target< nums[m]){
-                r = m-1
+            if (target >= nums[l] && target < nums[m]) {
+                r = m - 1
             } else {
-                l = m+1
+                l = m + 1
             }
         }
     }
@@ -489,32 +540,32 @@ fun longestValidParentheses(s: String): Int {
     var leftMax = 0
     var rightMax = 0
 
-    for(i in 0 until s.length){
-        if(s[i] == '('){
+    for (i in 0 until s.length) {
+        if (s[i] == '(') {
             left++
         } else {
             right++
         }
 
-        if(s[s.length-1-i] == '('){
+        if (s[s.length - 1 - i] == '(') {
             bleft++
         } else {
             bright++
         }
 
-        if(left == right){
-            leftMax = Math.max(leftMax, left*2)
+        if (left == right) {
+            leftMax = Math.max(leftMax, left * 2)
         }
-        if(bleft == bright){
-            rightMax = Math.max(rightMax, bleft *2)
+        if (bleft == bright) {
+            rightMax = Math.max(rightMax, bleft * 2)
         }
 
-        if(right>left){
+        if (right > left) {
             left = 0
             right = 0
         }
 
-        if(bleft>bright){
+        if (bleft > bright) {
             bleft = 0
             bright = 0
         }
@@ -525,12 +576,12 @@ fun longestValidParentheses(s: String): Int {
 // https://leetcode.com/problems/next-permutation/
 // time O(n2)
 // space O(1)
-fun nextPermutation(nums:IntArray) : Unit {
-    for(i in nums.lastIndex-1 downTo 0){
-        for(j in nums.lastIndex downTo i+1){
-            if(nums[j] > nums[i]){
+fun nextPermutation(nums: IntArray): Unit {
+    for (i in nums.lastIndex - 1 downTo 0) {
+        for (j in nums.lastIndex downTo i + 1) {
+            if (nums[j] > nums[i]) {
 //                nums.swap(i,j)
-                nums.sort(i+1)
+                nums.sort(i + 1)
                 return
             }
         }
