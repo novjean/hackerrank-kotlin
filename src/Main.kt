@@ -3,6 +3,7 @@ import java.io.InputStreamReader
 import java.text.NumberFormat
 import java.time.LocalDate
 import java.util.*
+import kotlin.collections.ArrayDeque
 import kotlin.collections.ArrayList
 import kotlin.collections.HashSet
 
@@ -93,8 +94,130 @@ fun main() {
 //    searchInsert(intArrayOf(3,4,5,9), 8)
 //    isValidSudoku()
 //    countAndSay(4)
-    combinationSum(intArrayOf(2,3,6,7), 7)
+//    combinationSum(intArrayOf(2,3,6,7), 7)
+//    solveSudoku()
+
+//    longestSubarray(intArrayOf(8, 2, 4, 7), 4)
+    majorityElement(intArrayOf(3,2,3))
 }
+
+// https://leetcode.com/problems/majority-element/s
+// time O(nlogn)
+// spaceO(log n)
+fun majorityElement(nums: IntArray): Int {
+    if(nums.isEmpty()){
+        return 0
+    }
+
+    Arrays.sort(nums)
+
+    var num = nums[0]
+    var count = 1
+    var res = num
+    var resCount = 1
+
+    for(i in 1 until nums.size){
+        if(num == nums[i]){
+            count++
+        } else {
+            num = nums[i]
+            count =1
+        }
+
+        if(count>resCount){
+            resCount = count
+            res = num
+        }
+    }
+    return res
+}
+
+
+
+// https://leetcode.com/problems/remove-duplicates-from-sorted-array-ii/
+// time O(n)
+// space O(1)
+fun removeDuplicates2(nums: IntArray): Int {
+    if(nums.size == 0)
+        return 0
+
+    var j = 1
+
+    for(i in 2 until nums.size){
+        if(nums[j] == nums[i]){
+            if(nums[j] == nums[j-1]){
+                // two entered
+                continue
+            } else {
+                nums[++j] = nums[i]
+            }
+        } else {
+            nums[++j] = nums[i]
+        }
+    }
+    return j+1
+}
+
+
+// https://leetcode.com/problems/merge-sorted-array/
+// time O(m+n)
+// space O(1)
+fun mergeSortedArray(nums1: IntArray, m: Int, nums2: IntArray, n: Int): Unit {
+    var i = m-1
+    var j = n-1
+    var k = m+n-1
+
+    while(j<=0){
+        if(i<0 || nums2[j] > nums1[i]){
+            nums1[k] = nums2[j]
+            k--
+            j--
+        } else {
+            nums1[k] = nums1[i]
+            k--
+            i--
+        }
+    }
+}
+
+
+// https://leetcode.com/problems/longest-continuous-subarray-with-absolute-diff-less-than-or-equal-to-limit
+// time O(n), the inner loops perform at O(1) only since it checks for a condition
+// space O(n)
+fun longestSubarray(nums: IntArray, limit: Int): Int {
+    val dec = LinkedList<Int>()
+    val inc = LinkedList<Int>()
+    val n = nums.size
+    var i = 0
+    var ans = 0
+
+    for (j in 0 until n) {
+        while (dec.isNotEmpty() && nums[j] > dec.last) {
+            dec.removeLast()
+        }
+        dec.add(nums[j])
+
+        while (inc.isNotEmpty() && nums[j] < inc.last) {
+            inc.removeLast()
+        }
+        inc.add(nums[j])
+
+        while (dec.first - inc.first > limit) {
+            if (dec.first == nums[i]) {
+                dec.removeFirst()
+            }
+            if (inc.first == nums[i]) {
+                inc.removeFirst()
+            }
+            i++
+        }
+
+        ans = maxOf(ans, j - i + 1)
+    }
+
+    return ans
+}
+
 
 // sudoku solver
 fun solveSudoku(board: Array<CharArray>) : Unit {
@@ -162,10 +285,6 @@ fun isValidAtPosition(board: Array<CharArray>,
     }
     return true
 }
-
-//
-// time
-// space
 
 
 // https://leetcode.com/problems/combination-sum/
@@ -459,6 +578,8 @@ fun swap(arr: IntArray, i: Int, j: Int) {
 }
 
 // https://leetcode.com/problems/remove-element/
+// time O(n)
+// space O(1)
 fun removeElement(nums: IntArray, `val`: Int): Int {
     var k = 0
 
