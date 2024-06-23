@@ -5,6 +5,7 @@ import java.time.LocalDate
 import java.util.*
 import kotlin.collections.ArrayDeque
 import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 import kotlin.collections.HashSet
 
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
@@ -95,16 +96,54 @@ fun main() {
 //    isValidSudoku()
 //    countAndSay(4)
 //    combinationSum(intArrayOf(2,3,6,7), 7)
-//    solveSudoku()
-
+//    solveSudoku() 
 //    longestSubarray(intArrayOf(8, 2, 4, 7), 4)
-    majorityElement(intArrayOf(3,2,3))
+//    majorityElement(intArrayOf(3,2,3))
+    rotate(intArrayOf(-1), 2)
+}
+
+
+// https://leetcode.com/problems/rotate-array/
+// time O(n)
+// space O(n)
+fun rotate(nums: IntArray, k: Int): Unit {
+    var n = nums.size
+    var k1 = k
+    var res = IntArray(nums.size)
+    var j=0
+
+    if(k1>n){
+        k1 = k1%n
+    }
+
+    for(i in n-k1 until nums.size){
+        res[j++] = nums[i]
+    }
+
+    for(i in 0 until n-k1){
+        res[j++] = nums[i]
+    }
+
+    for(i in 0 until n){
+        nums[i] = res[i]
+    }
 }
 
 // https://leetcode.com/problems/majority-element/s
+// time O(n)
+// space O(n)
+fun majorityElement(nums:IntArray): Int{
+    var occ = HashMap<Int, Int>()
+    nums.forEach {
+        occ.put(it, occ.getOrDefault(it, 0)+1)
+    }
+    return occ.maxBy { it.value }.key
+}
+
+
 // time O(nlogn)
 // spaceO(log n)
-fun majorityElement(nums: IntArray): Int {
+fun majorityElement2(nums: IntArray): Int {
     if(nums.isEmpty()){
         return 0
     }
@@ -131,7 +170,6 @@ fun majorityElement(nums: IntArray): Int {
     }
     return res
 }
-
 
 
 // https://leetcode.com/problems/remove-duplicates-from-sorted-array-ii/
