@@ -102,6 +102,41 @@ fun main() {
 //    rotate(intArrayOf(-1), 2)
 //    isPalindrome2("A man, a plan, a canal: Panama")
 //    minKBitFlips(intArrayOf(1,0,1),1)
+    maxProfit(intArrayOf(2,4,1))
+    maxProfit2(intArrayOf(2,4,1))
+}
+
+// https://leetcode.com/problems/best-time-to-buy-and-sell-stock-ii/
+// time O(n)
+// space O(1)
+fun maxProfit2(prices: IntArray) : Int{
+    var profit = 0
+
+    for(i in 1 until prices.size){
+        if(prices[i]> prices[i-1]){
+            profit+= prices[i] - prices[i-1]
+        }
+    }
+    return profit
+}
+
+// https://leetcode.com/problems/best-time-to-buy-and-sell-stock/
+// time O(n)
+// space O(1)
+fun maxProfit(prices: IntArray): Int {
+    var maxP = 0
+    var buy = prices[0]
+
+    for(i in 1 until prices.size){
+        if(prices[i] < buy){
+            buy = prices[i]
+        } else {
+            if(maxP < prices[i] - buy){
+                maxP = prices[i] - buy
+            }
+        }
+    }
+    return maxP
 }
 
 // https://leetcode.com/problems/minimum-number-of-k-consecutive-bit-flips/
