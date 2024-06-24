@@ -105,7 +105,96 @@ fun main() {
 //    maxProfit2(intArrayOf(2,4,1))
 //    canJump(intArrayOf(1))
 //    canConstructRansomNote("aa", "aab")
-    simplifyPath("/home/user/Documents/../Pictures")
+//    simplifyPath("/home/user/Documents/../Pictures")
+    addBinary("11", "1")
+}
+
+// https://leetcode.com/problems/add-binary/
+// time O(n), where n = maxLength(a.length, b.length)
+// space O(n), where n = maxLength(a.length, b.length)
+fun addBinary(a: String, b: String): String {
+    var aLen = a.length
+    var bLen = b.length
+    var result :String = ""
+
+    var i = aLen-1
+    var j = bLen -1
+    var carry = false
+    var str : StringBuilder = StringBuilder()
+
+    while(i>=0 || j>=0){
+        var ca: Char
+        if(i<0){
+            ca = '0'
+        } else {
+            ca = a[i]
+        }
+
+        var cb: Char
+        if(j<0){
+            cb = '0'
+        } else {
+            cb = b[j]
+        }
+
+
+        if(ca == '1' && cb=='1'){
+            if(carry == true){
+                str.append("1")
+                carry = true
+            } else {
+                str.append("0")
+                carry = true
+            }
+        } else if((ca == '1' && cb =='0') ||
+            (ca == '0' && cb =='1')){
+            if(carry == true){
+                str.append("0")
+                carry = true
+            }  else {
+                str.append("1")
+                carry = false
+            }
+        } else {
+            if(carry == true){
+                str.append("1")
+                carry = false
+            } else {
+                str.append("0")
+            }
+        }
+
+        j--
+        i--
+    }
+
+    if(carry){
+        str.append("1")
+    }
+
+    result = str.toString()
+
+    return result.reversed()
+}
+
+
+// https://leetcode.com/problems/min-stack/
+// time O(1) for all operations
+// space O(n)
+class MinStack() {
+    private val list = mutableListOf<Pair<Int, Int>>()
+
+    fun push(value:Int){
+        list += value to minOf(value, list.lastOrNull()?.second ?: value)
+    }
+
+    fun pop(){
+        list.removeAt(list.lastIndex)
+    }
+
+    fun top(): Int = list.last().first
+
+    fun getMin(): Int = list.last().second
 }
 
 // https://leetcode.com/problems/simplify-path/
