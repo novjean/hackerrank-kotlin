@@ -177,6 +177,9 @@ fun addBinary(a: String, b: String): String {
     return result.reversed()
 }
 
+fun addBinary2(a:String, b: String): String {
+    return (a.toBigInteger() + b.toBigInteger()).toString(2)
+}
 
 // https://leetcode.com/problems/min-stack/
 // time O(1) for all operations
