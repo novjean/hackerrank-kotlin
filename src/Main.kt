@@ -104,28 +104,52 @@ fun main() {
 //    maxProfit(intArrayOf(2,4,1))
 //    maxProfit2(intArrayOf(2,4,1))
 //    canJump(intArrayOf(1))
-    canConstructRansomNote("aa", "aab")
+//    canConstructRansomNote("aa", "aab")
+    simplifyPath("/home/user/Documents/../Pictures")
+}
+
+// https://leetcode.com/problems/simplify-path/
+// time O(n)
+// space O(n)
+fun simplifyPath(path: String): String {
+    var directories = path.split("/")
+    var stack = Stack<String>()
+
+    directories.forEach { dir ->
+        when {
+            dir == ".." -> {
+                if (stack.isNotEmpty()) {
+                    stack.pop()
+                }
+            }
+
+            dir.isNotEmpty() && dir != "." -> {
+                stack.push(dir)
+            }
+        }
+    }
+    return "/" + stack.joinToString("/")
 }
 
 // https://leetcode.com/problems/ransom-note/
 // time O(n + m)
 // space O(k) where k is the number of unique characters in magazine
 fun canConstructRansomNote(ransomNote: String, magazine: String): Boolean {
-    if(ransomNote.length>magazine.length) return false
+    if (ransomNote.length > magazine.length) return false
 
-    var rMap : MutableMap<Char, Int> = HashMap()
+    var rMap: MutableMap<Char, Int> = HashMap()
 
-    for(i in 0 until magazine.length){
-        val c : Char = magazine[i]
-        var cc = if(rMap.contains(c)) rMap.get(c)!!+1 else 1
+    for (i in 0 until magazine.length) {
+        val c: Char = magazine[i]
+        var cc = if (rMap.contains(c)) rMap.get(c)!! + 1 else 1
         rMap.put(c, cc)
     }
 
-    for(i in 0 until ransomNote.length){
-        val c : Char = ransomNote[i]
-        if(rMap.contains(c)){
+    for (i in 0 until ransomNote.length) {
+        val c: Char = ransomNote[i]
+        if (rMap.contains(c)) {
             var cc = rMap.get(c)!!
-            if(cc>0){
+            if (cc > 0) {
                 rMap.put(c, --cc)
             } else {
                 return false
@@ -141,10 +165,10 @@ fun canConstructRansomNote(ransomNote: String, magazine: String): Boolean {
 // time O(n)
 // space O(1)
 fun canJump(nums: IntArray): Boolean {
-    var targetIndex = nums.size-1
+    var targetIndex = nums.size - 1
 
-    for(i in nums.size-2 downTo 0){
-        if(i + nums[i] >= targetIndex){
+    for (i in nums.size - 2 downTo 0) {
+        if (i + nums[i] >= targetIndex) {
             targetIndex = i
         }
     }
@@ -154,12 +178,12 @@ fun canJump(nums: IntArray): Boolean {
 // https://leetcode.com/problems/best-time-to-buy-and-sell-stock-ii/
 // time O(n)
 // space O(1)
-fun maxProfit2(prices: IntArray) : Int{
+fun maxProfit2(prices: IntArray): Int {
     var profit = 0
 
-    for(i in 1 until prices.size){
-        if(prices[i]> prices[i-1]){
-            profit+= prices[i] - prices[i-1]
+    for (i in 1 until prices.size) {
+        if (prices[i] > prices[i - 1]) {
+            profit += prices[i] - prices[i - 1]
         }
     }
     return profit
@@ -172,11 +196,11 @@ fun maxProfit(prices: IntArray): Int {
     var maxP = 0
     var buy = prices[0]
 
-    for(i in 1 until prices.size){
-        if(prices[i] < buy){
+    for (i in 1 until prices.size) {
+        if (prices[i] < buy) {
             buy = prices[i]
         } else {
-            if(maxP < prices[i] - buy){
+            if (maxP < prices[i] - buy) {
                 maxP = prices[i] - buy
             }
         }
@@ -190,17 +214,17 @@ fun maxProfit(prices: IntArray): Int {
 fun minKBitFlips(nums: IntArray, k: Int): Int {
     var count = 0
 
-    for(i in 0 until nums.size-k +1){
-        if(nums[i] == 0){
+    for (i in 0 until nums.size - k + 1) {
+        if (nums[i] == 0) {
             count++
             var pointer = 0
             repeat(k) {
-                nums[i+pointer] = if(nums[i+pointer] == 0) 1 else 0
+                nums[i + pointer] = if (nums[i + pointer] == 0) 1 else 0
                 pointer++
             }
         }
     }
-    return if(nums.contains(0)) -1 else count
+    return if (nums.contains(0)) -1 else count
 }
 
 // https://leetcode.com/problems/valid-palindrome/?envType=study-plan-v2&envId=top-interview-150
