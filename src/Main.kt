@@ -3,7 +3,6 @@ import java.io.InputStreamReader
 import java.text.NumberFormat
 import java.time.LocalDate
 import java.util.*
-import kotlin.collections.ArrayDeque
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 import kotlin.collections.HashSet
@@ -102,8 +101,54 @@ fun main() {
 //    rotate(intArrayOf(-1), 2)
 //    isPalindrome2("A man, a plan, a canal: Panama")
 //    minKBitFlips(intArrayOf(1,0,1),1)
-    maxProfit(intArrayOf(2,4,1))
-    maxProfit2(intArrayOf(2,4,1))
+//    maxProfit(intArrayOf(2,4,1))
+//    maxProfit2(intArrayOf(2,4,1))
+//    canJump(intArrayOf(1))
+    canConstructRansomNote("aa", "aab")
+}
+
+// https://leetcode.com/problems/ransom-note/
+// time O(n + m)
+// space O(k) where k is the number of unique characters in magazine
+fun canConstructRansomNote(ransomNote: String, magazine: String): Boolean {
+    if(ransomNote.length>magazine.length) return false
+
+    var rMap : MutableMap<Char, Int> = HashMap()
+
+    for(i in 0 until magazine.length){
+        val c : Char = magazine[i]
+        var cc = if(rMap.contains(c)) rMap.get(c)!!+1 else 1
+        rMap.put(c, cc)
+    }
+
+    for(i in 0 until ransomNote.length){
+        val c : Char = ransomNote[i]
+        if(rMap.contains(c)){
+            var cc = rMap.get(c)!!
+            if(cc>0){
+                rMap.put(c, --cc)
+            } else {
+                return false
+            }
+        } else {
+            return false
+        }
+    }
+    return true
+}
+
+// https://leetcode.com/problems/jump-game/
+// time O(n)
+// space O(1)
+fun canJump(nums: IntArray): Boolean {
+    var targetIndex = nums.size-1
+
+    for(i in nums.size-2 downTo 0){
+        if(i + nums[i] >= targetIndex){
+            targetIndex = i
+        }
+    }
+    return targetIndex == 0
 }
 
 // https://leetcode.com/problems/best-time-to-buy-and-sell-stock-ii/
