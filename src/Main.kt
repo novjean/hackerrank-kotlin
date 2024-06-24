@@ -100,10 +100,32 @@ fun main() {
 //    longestSubarray(intArrayOf(8, 2, 4, 7), 4)
 //    majorityElement(intArrayOf(3,2,3))
 //    rotate(intArrayOf(-1), 2)
-    isPalindrome2("A man, a plan, a canal: Panama")
+//    isPalindrome2("A man, a plan, a canal: Panama")
+//    minKBitFlips(intArrayOf(1,0,1),1)
+}
+
+// https://leetcode.com/problems/minimum-number-of-k-consecutive-bit-flips/
+// time O(n*k)
+// space O(1)
+fun minKBitFlips(nums: IntArray, k: Int): Int {
+    var count = 0
+
+    for(i in 0 until nums.size-k +1){
+        if(nums[i] == 0){
+            count++
+            var pointer = 0
+            repeat(k) {
+                nums[i+pointer] = if(nums[i+pointer] == 0) 1 else 0
+                pointer++
+            }
+        }
+    }
+    return if(nums.contains(0)) -1 else count
 }
 
 // https://leetcode.com/problems/valid-palindrome/?envType=study-plan-v2&envId=top-interview-150
+// time O(n)
+// space O(1)
 fun isPalindrome2(s: String): Boolean {
     val len = s.length
     var j = len - 1
