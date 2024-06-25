@@ -115,6 +115,24 @@ fun main() {
 //    combine(5, 3)
 //    twoSum2(intArrayOf(1,2,3,4), 3)
 //    minSubArrayLen(2, intArrayOf(1,2,3,4,5))
+    reverseWords("hell world ")
+}
+
+// https://leetcode.com/problems/reverse-words-in-a-string/
+// time O(n)
+// space O(n)
+fun reverseWords(s: String): String {
+    val words = s.split(" ")
+    val len = words.size
+    var res = StringBuilder()
+
+    for(i in len-1 downTo 0){
+        val word = words[i]
+        if(word!=""){
+            res.append("$word ")
+        }
+    }
+    return res.toString().trim()
 }
 
 // https://leetcode.com/problems/minimum-size-subarray-sum
