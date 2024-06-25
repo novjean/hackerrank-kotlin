@@ -111,6 +111,80 @@ fun main() {
 //    evalRPN(listOf("3","11","+","5","-").toTypedArray())
 //    wordPattern("abba", "dog cat cat dog")
 //    canCompleteCircuit()
+    letterCombinations("23")
+}
+
+// https://leetcode.com/problems/letter-combinations-of-a-phone-number/
+// time O(m^k), where m is the avg of length of the letters in a button
+// space O(m^k), k is the length of the digits string
+fun letterCombinations(digits: String) : List<String> {
+    val map = mapOf(
+        "1" to "",
+        "2" to "abc",
+        "3" to "def",
+        "4" to "ghi",
+        "5" to "jkl",
+        "6" to "mno",
+        "7" to "pqrs",
+        "8" to "tuv",
+        "9" to "wxyz",
+        "0" to "",
+    )
+
+    var combinations : MutableList<String> = mutableListOf()
+
+    for(i in 0 until digits.length){
+        val digit = digits[i]
+        var letters = map.get(digit.toString())
+
+        if(combinations.isEmpty()){
+            letters!!.forEach { combinations.add(it.toString()) }
+        } else {
+            var tempComb : MutableList<String> = mutableListOf()
+            combinations.forEach {
+                val comb = it
+                letters!!.forEach {
+                    tempComb.add("$comb$it")
+                }
+            }
+            combinations.clear()
+            combinations = tempComb
+        }
+    }
+    return combinations
+}
+
+fun letterCombinationsBackTrack(digits: String) : List<String> {
+    val map = mapOf(
+        '2' to "abc",
+        '3' to "def",
+        '4' to "ghi",
+        '5' to "jkl",
+        '6' to "mno",
+        '7' to "pqrs",
+        '8' to "tuv",
+        '9' to "wxyz"
+    )
+
+    val result = mutableListOf<String>()
+    if (digits.isEmpty()) return result
+
+    fun backtrack(index: Int, current: StringBuilder) {
+        if (index == digits.length) {
+            result.add(current.toString())
+            return
+        }
+
+        val letters = map[digits[index]] ?: return
+        for (letter in letters) {
+            current.append(letter)
+            backtrack(index + 1, current)
+            current.deleteCharAt(current.length - 1)
+        }
+    }
+
+    backtrack(0, StringBuilder())
+    return result
 }
 
 // https://leetcode.com/problems/gas-station/
