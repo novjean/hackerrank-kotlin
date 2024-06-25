@@ -113,8 +113,30 @@ fun main() {
 //    canCompleteCircuit()
 //    letterCombinations("23")
 //    combine(5, 3)
+//    twoSum2(intArrayOf(1,2,3,4), 3)
+//    minSubArrayLen(2, intArrayOf(1,2,3,4,5))
+}
 
+// https://leetcode.com/problems/minimum-size-subarray-sum
+// time O(n), the inner while loop does not make O(n2)
+// since each element is added and removed once,
+// so amortized operation O(n)
+// space O(1)
+fun minSubArrayLen(target: Int, nums: IntArray) : Int {
+    var l=0
+    var res = Int.MAX_VALUE
+    var s =0
 
+    for(r in nums.indices){
+        s += nums[r]
+
+        while(s>=target){
+            res = minOf(res, r-l+1)
+            s -= nums[l]
+            l++
+        }
+    }
+    return if(res!=Int.MAX_VALUE) res else 0
 }
 
 // https://leetcode.com/problems/two-sum-ii-input-array-is-sorted/
