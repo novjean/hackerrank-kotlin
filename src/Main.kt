@@ -106,8 +106,136 @@ fun main() {
 //    canJump(intArrayOf(1))
 //    canConstructRansomNote("aa", "aab")
 //    simplifyPath("/home/user/Documents/../Pictures")
-    addBinary("11", "1")
+//    addBinary("11", "1")
+//    bstToGst()
+//    evalRPN(listOf("3","11","+","5","-").toTypedArray())
+//    wordPattern("abba", "dog cat cat dog")
+//    canCompleteCircuit()
 }
+
+// https://leetcode.com/problems/gas-station/
+// time O(n)
+// space O(1)
+fun canCompleteCircuit(gas:IntArray, cost: IntArray) : Int{
+    val n  = gas.size
+    var totalGas = 0
+    var currentGas = 0
+    var startIdx = 0
+
+    for(i in 0 until n){
+        val diff = gas[i] - cost[i]
+        totalGas += diff
+        currentGas += diff
+
+        if(currentGas<0){
+            currentGas = 0
+            startIdx = i+1
+        }
+    }
+    return if(totalGas>=0) startIdx else -1
+}
+
+// https://leetcode.com/problems/word-pattern/
+// time O(n^2) , because of checking in hashmap using contains()
+// space O(n)
+fun wordPattern(pattern: String, s: String): Boolean {
+    val words = s.split(" ")
+
+    if(pattern.length != words.size){
+        return false
+    }
+    var map : MutableMap<Char, String> = mutableMapOf()
+
+    for(i in 0 until pattern.length){
+        val c = pattern[i]
+
+        val mapWord= map.get(c)
+        if(mapWord == null){
+            //not mapped
+            if(map.values.contains(words[i])){
+                return false
+            }
+            map.put(c, words[i])
+        } else {
+            // mapped
+            if(words[i] != mapWord){
+                return false
+            }
+        }
+    }
+
+    return true
+}
+
+
+// https://leetcode.com/problems/evaluate-reverse-polish-notation/
+// time O(n)
+// space O(n/2)
+fun evalRPN(tokens: Array<String>): Int {
+    var stack = Stack<Int>()
+    var res = 0
+    var isResInit = true
+
+    for(i in 0 until tokens.size){
+        val s = tokens[i]
+
+        val number = s.toIntOrNull()
+
+        if(number!=null && number in -200..200){
+            stack.push(s.toInt())
+        } else {
+            if(isResInit){
+                isResInit = false
+                val numb = stack.pop()
+                val numa = stack.pop()
+
+                when(s){
+                    "+" -> res = numa+numb
+                    "-" -> res = numa-numb
+                    "*" -> res = numa*numb
+                    "/" -> res = numa/numb
+                    else -> res = 0
+                }
+            } else {
+                val num = stack.pop()
+
+                when(s){
+                    "+" -> res = num+res
+                    "-" -> res = res-num
+                    "*" -> res = num*res
+                    "/" -> res = num/res
+                    else -> res = 0
+                }
+            }
+
+        }
+    }
+    return res
+}
+
+fun evalRPN1(tokens: Array<String>): Int {
+    val stack = mutableListOf<Int>()
+
+    for (token in tokens) {
+        val operation: (Int, Int) -> Int = when (token) {
+            "+" -> Int::plus
+            "-" -> Int::minus
+            "*" -> Int::times
+            "/" -> Int::div
+            else -> {
+                stack += token.toInt()
+                continue
+            }
+        }
+
+        val rhs = stack.removeLast()
+        val lhs = stack.removeLast()
+        stack += operation(lhs, rhs)
+    }
+
+    return stack.single()
+}
+
 
 // https://leetcode.com/problems/binary-search-tree-to-greater-sum-tree/
 // time O(n) since it visits all the nodes only once, reverse in order traversal
