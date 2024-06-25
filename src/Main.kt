@@ -111,7 +111,37 @@ fun main() {
 //    evalRPN(listOf("3","11","+","5","-").toTypedArray())
 //    wordPattern("abba", "dog cat cat dog")
 //    canCompleteCircuit()
-    letterCombinations("23")
+//    letterCombinations("23")
+    combine(5, 3)
+}
+
+//
+fun combine(n: Int, k: Int): List<List<Int>> {
+    var combination = (1..k).map{ it }.toIntArray()
+    var result = mutableListOf<List<Int>>()
+
+    do{
+        result.add(combination.toList())
+    } while(nextCombination(combination, n, k))
+    return result
+}
+
+fun nextCombination(combination: IntArray, n: Int, k:Int) : Boolean{
+    var index = k-1
+
+    // comparing to ensure that we don't enter the ind
+    while(index>=0 && combination[index] == n-k+1+index){
+        index--
+    }
+    if(index == -1){
+        return false
+    }
+    combination[index]++
+
+    for(j in index+1 until k ) {
+        combination[j] = combination[j-1] + 1
+    }
+    return true
 }
 
 // https://leetcode.com/problems/letter-combinations-of-a-phone-number/
