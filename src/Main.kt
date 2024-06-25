@@ -109,6 +109,31 @@ fun main() {
     addBinary("11", "1")
 }
 
+// https://leetcode.com/problems/binary-search-tree-to-greater-sum-tree/
+// time O(n) since it visits all the nodes only once, reverse in order traversal
+// space
+class TreeNode(var `val`: Int) {
+    var left: TreeNode? = null
+    var right: TreeNode? = null
+}
+
+fun bstToGst(root: TreeNode?) : TreeNode? {
+    var accumulativeNodeSum = 0
+
+    fun reverseInorderTraverse(node: TreeNode?){
+        node ?: return
+
+        reverseInorderTraverse(node.right)
+
+        accumulativeNodeSum += node.`val`
+        node.`val` = accumulativeNodeSum
+
+        reverseInorderTraverse(node.left)
+    }
+    reverseInorderTraverse(root)
+    return root
+}
+
 // https://leetcode.com/problems/add-binary/
 // time O(n), where n = maxLength(a.length, b.length)
 // space O(n), where n = maxLength(a.length, b.length)
