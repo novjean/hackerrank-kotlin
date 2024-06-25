@@ -112,7 +112,89 @@ fun main() {
 //    wordPattern("abba", "dog cat cat dog")
 //    canCompleteCircuit()
 //    letterCombinations("23")
-    combine(5, 3)
+//    combine(5, 3)
+
+
+}
+
+// https://leetcode.com/problems/two-sum-ii-input-array-is-sorted/
+// time O(n)
+// space O(1)
+fun twoSum2(nums: IntArray, target: Int): IntArray {
+    var i =0
+    var j = nums.size -1
+
+    while(j>i){
+        val sum = nums[i] + nums[j]
+        if(sum==target){
+            return intArrayOf(i+1,j+1)
+        } else if(sum>target){
+            j--
+        } else {
+            i++
+        }
+    }
+    return intArrayOf(0,0)
+}
+
+// https://leetcode.com/problems/is-subsequence/
+// time O(n)
+// space O(1)
+fun isSubsequence(s: String, t: String): Boolean {
+    var i = 0
+    t.forEach {
+        if(i<s.length && it == s[i]) i++
+    }
+    return i == s.length
+}
+
+fun isSubsequence2(s: String, t: String): Boolean {
+    var i = 0
+    var j = 0
+
+    while(i<s.length && j<t.length){
+        if(s[i] == t[j++]){
+            i++
+        }
+    }
+    return i == s.length
+}
+
+// https://leetcode.com/problems/insert-delete-getrandom-o1/
+class RandomizedSet() {
+    private val map: MutableMap<Int, Int> = hashMapOf()
+    private val arr: MutableList<Int> = mutableListOf()
+
+    fun insert(value: Int): Boolean {
+        if(!map.containsValue(value)){
+            arr.add(value)
+            map[value] = arr.size-1
+            return true
+        } else
+            return false
+    }
+
+    fun remove(value: Int): Boolean {
+        if(map.containsValue(value)){
+            val index = map[value] ?: 0
+            val lastVal = arr.last()
+
+            arr[index] = lastVal
+            arr.removeAt(arr.lastIndex)
+
+            map[lastVal] = index
+            map.remove(index)
+
+            return true
+        }
+        return false
+    }
+
+    fun getRandom(): Int {
+        val randomIndex = (0..arr.lastIndex).random()
+        return arr[randomIndex]
+    }
+
 }
 
 //
