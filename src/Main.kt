@@ -125,8 +125,23 @@ fun main() {
 //    summaryRanges(intArrayOf(0,1,2,4,5,7))
 //    balanceBST()
 //    isIsomorphic("egg", "add")
+//    hasCycle()
 
 }
+
+// https://leetcode.com/problems/linked-list-cycle/
+fun hasCycle(head: ListNode?): Boolean {
+    var slow = head
+    var fast = head
+
+    while(fast!=null && fast.next!=null){
+        slow = slow!!.next
+        fast = fast.next!!.next
+        if(slow == fast) return true
+    }
+    return false
+}
+
 
 // https://leetcode.com/problems/isomorphic-strings
 // time O(n)
