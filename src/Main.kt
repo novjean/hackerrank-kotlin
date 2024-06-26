@@ -122,15 +122,13 @@ fun main() {
 // time O(n)
 // space O(n)
 fun reverseWords(s: String): String {
-    val words = s.split(" ")
+    val words = s.split(" ").filter { it.isNotEmpty() }
     val len = words.size
     var res = StringBuilder()
 
     for(i in len-1 downTo 0){
         val word = words[i]
-        if(word!=""){
-            res.append("$word ")
-        }
+        res.append("$word ")
     }
     return res.toString().trim()
 }
