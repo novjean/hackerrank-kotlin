@@ -126,8 +126,39 @@ fun main() {
 //    balanceBST()
 //    isIsomorphic("egg", "add")
 //    hasCycle()
-
+    plusOne(intArrayOf(8,9,9,9))
 }
+
+// https://leetcode.com/problems/plus-one/
+// time O(n)
+// space O(n)
+fun plusOne(digits: IntArray): IntArray {
+    var list:MutableList<Int> = mutableListOf()
+    digits.reversed().forEach {
+        list.add(it)
+    }
+
+    var carry = 0
+
+    for(i in 0 until list.size){
+        var num = list[i]
+
+        if(num == 9){
+            carry = 1
+            list[i] = 0
+        } else {
+            val sum = num + 1
+            list[i] = sum
+            carry = 0
+            break
+        }
+    }
+
+    if(carry ==1) list.add(1)
+
+    return list.reversed().toIntArray()
+}
+
 
 // https://leetcode.com/problems/linked-list-cycle/
 fun hasCycle(head: ListNode?): Boolean {
