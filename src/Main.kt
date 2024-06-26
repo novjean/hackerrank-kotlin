@@ -123,7 +123,47 @@ fun main() {
 //    reverseWords("hell world ")
 //    lengthOfLastWord("this is a new world   ")
 //    summaryRanges(intArrayOf(0,1,2,4,5,7))
+//    balanceBST()
+//    isIsomorphic("egg", "add")
+
 }
+
+// https://leetcode.com/problems/isomorphic-strings
+// time O(n)
+// space O(n)
+fun isIsomorphic(s: String, t: String): Boolean {
+    if(s.length!=t.length) return false
+
+    val map: MutableMap<Char, Char> = HashMap()
+
+    for(i in 0 until s.length){
+        val cs = s[i]
+        val ct = t[i]
+
+        if(map.contains(cs)){
+            if(map[cs] == ct) continue
+            else return false
+        } else {
+            if(map.containsValue(ct)){
+                return false
+            }
+            map.put(cs,ct)
+        }
+    }
+    return true
+}
+
+// space O(1)
+fun isIsomorphic2(s: String, t: String): Boolean {
+    if(s.length != t.length) return false
+
+    for (i in 0 until s.length) {
+        if(s.indexOf(s[i]) != t.indexOf(t[i])) return false
+    }
+
+    return true
+}
+
 
 // https://leetcode.com/problems/balance-a-binary-search-tree/
 // time O(n logn)
