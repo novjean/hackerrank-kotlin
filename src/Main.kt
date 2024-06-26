@@ -980,20 +980,17 @@ fun removeDuplicates2(nums: IntArray): Int {
 // https://leetcode.com/problems/merge-sorted-array/
 // time O(m+n)
 // space O(1)
-fun mergeSortedArray(nums1: IntArray, m: Int, nums2: IntArray, n: Int): Unit {
-    var i = m - 1
-    var j = n - 1
-    var k = m + n - 1
+fun mergeSortedArray(nums1: IntArray, m: Int, nums2: IntArray, n: Int): Unit{
+    var i = m-1
+    var j = n-1
+    var k = m+n -1
 
-    while (j <= 0) {
-        if (i < 0 || nums2[j] > nums1[i]) {
-            nums1[k] = nums2[j]
-            k--
-            j--
+    // the value of i will always be bigger
+    while(j>=0){
+        if(i<0 || nums2[j] > nums1[i]){
+            nums1[k--] = nums2[j--]
         } else {
-            nums1[k] = nums1[i]
-            k--
-            i--
+            nums1[k--] = nums1[i--]
         }
     }
 }
