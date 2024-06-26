@@ -7,6 +7,11 @@ import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 import kotlin.collections.HashSet
 
+class TreeNode(var `val`: Int) {
+    var left: TreeNode? = null
+    var right: TreeNode? = null
+}
+
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 fun main() {
@@ -119,6 +124,36 @@ fun main() {
 //    lengthOfLastWord("this is a new world   ")
 //    summaryRanges(intArrayOf(0,1,2,4,5,7))
 }
+
+// https://leetcode.com/problems/balance-a-binary-search-tree/
+// time O(n logn)
+// space O(n)
+fun balanceBST(root: TreeNode?): TreeNode? {
+    val orderedList = mutableListOf<Int>()
+    convertTree(root, orderedList)
+    return buildBalancedSearchTree(orderedList)
+}
+
+// time O(n)
+// space O(n) due to recursion stack
+fun convertTree(root: TreeNode?, orderedList: MutableList<Int>){
+    if(root == null) return
+    convertTree(root.left, orderedList)
+    orderedList.add(root.`val`)
+    convertTree(root.right, orderedList)
+}
+
+// time O(logn)
+// space O(log n) due to recursion stack
+fun buildBalancedSearchTree(orderedList: List<Int>): TreeNode?{
+    if(orderedList.isEmpty()) return null
+    val mid = orderedList.size/2
+    val node = TreeNode(orderedList[mid])
+    node.left = buildBalancedSearchTree(orderedList.subList(0, mid))
+    node.right =buildBalancedSearchTree(orderedList.subList(mid+1, orderedList.size))
+    return node
+}
+
 
 // https://leetcode.com/problems/summary-ranges/
 // time O(n)
@@ -523,10 +558,6 @@ fun evalRPN1(tokens: Array<String>): Int {
 // https://leetcode.com/problems/binary-search-tree-to-greater-sum-tree/
 // time O(n) since it visits all the nodes only once, reverse in order traversal
 // space
-class TreeNode(var `val`: Int) {
-    var left: TreeNode? = null
-    var right: TreeNode? = null
-}
 
 fun bstToGst(root: TreeNode?) : TreeNode? {
     var accumulativeNodeSum = 0
