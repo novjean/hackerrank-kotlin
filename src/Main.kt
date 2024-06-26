@@ -115,7 +115,25 @@ fun main() {
 //    combine(5, 3)
 //    twoSum2(intArrayOf(1,2,3,4), 3)
 //    minSubArrayLen(2, intArrayOf(1,2,3,4,5))
-    reverseWords("hell world ")
+//    reverseWords("hell world ")
+//    lengthOfLastWord("this is a new world   ")
+}
+
+// https://leetcode.com/problems/length-of-last-word/
+// time O(n)
+// space O(1)
+fun lengthOfLastWord(s: String): Int {
+    val len = s.length
+    var res = 0
+
+    for(i in len-1 downTo 0){
+        if(s[i] == ' '){
+            if(res>0) return res
+            else continue
+        }
+        res++
+    }
+    return res
 }
 
 // https://leetcode.com/problems/reverse-words-in-a-string/
