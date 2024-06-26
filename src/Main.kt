@@ -117,7 +117,48 @@ fun main() {
 //    minSubArrayLen(2, intArrayOf(1,2,3,4,5))
 //    reverseWords("hell world ")
 //    lengthOfLastWord("this is a new world   ")
+//    summaryRanges(intArrayOf(0,1,2,4,5,7))
 }
+
+// https://leetcode.com/problems/summary-ranges/
+// time O(n)
+// space O(1) excluding space required for output
+fun summaryRanges(nums: IntArray): List<String> {
+    var list = mutableListOf<String>()
+    if(nums.isEmpty())
+        return list
+
+    var l = 0
+    var r = 0
+    val len = nums.size
+
+    for(i in 1 until len){
+        val diff = nums[i]-nums[i-1]
+        if(diff==1){
+            r=i
+            continue
+        }
+        addToList(nums, l, r, list)
+
+        r=i
+        l=r
+    }
+
+    // adding until the last index
+    addToList(nums, l, r, list)
+    return list
+}
+
+fun addToList(nums: IntArray, l: Int, r: Int, list: MutableList<String>){
+    if(l==r){
+        val s = "${nums[l]}"
+        list.add(s)
+    } else {
+        val s = "${nums[l]}->${nums[r]}"
+        list.add(s)
+    }
+}
+
 
 // https://leetcode.com/problems/length-of-last-word/
 // time O(n)
