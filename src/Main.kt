@@ -135,6 +135,45 @@ fun main() {
 //    isAnagram("aacc","ccac")
 //    groupAnagrams(listOf("", "b"))
 //    maxDepth()
+//    buildBstTree()
+    longestConsecutive(intArrayOf(1,2,0,1))
+}
+
+fun longestConsecutive(nums: IntArray): Int {
+    if(nums.isEmpty()) return 0
+    if(nums.size==1) return 1
+
+//    nums.sort()
+    var list = nums.distinct().sorted()
+
+    var count = 1
+    var longest = 1
+
+    for(r in 1 until list.size){
+        val diff = list[r] - list[r-1]
+
+        if(diff == 1){
+            count++
+            longest = Math.max(longest, count)
+        } else {
+            count = 1
+        }
+    }
+    return longest
+}
+// time O(n)
+// space O(log n) since balanced. O(n) to build the tree
+fun sortedArrayToBst(nums:IntArray) : TreeNode? {
+    return buildBstTree(nums, 0, nums.size)
+}
+fun buildBstTree(nums: IntArray, start: Int, end:Int): TreeNode? {
+    if(start>=end) return null
+
+    val mid = (start + end)/2
+    val node = TreeNode(nums[mid])
+    node.left = buildBstTree(nums, start, mid)
+    node.right = buildBstTree(nums, mid+1, end)
+    return node
 }
 
 // https://leetcode.com/problems/maximum-depth-of-binary-tree/
