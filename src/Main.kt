@@ -126,7 +126,109 @@ fun main() {
 //    balanceBST()
 //    isIsomorphic("egg", "add")
 //    hasCycle()
-    plusOne(intArrayOf(8,9,9,9))
+//    plusOne(intArrayOf(8,9,9,9))
+//    climbStairs(5)
+//    productExceptSelf(intArrayOf(1,2,3,4))
+//    findCenterStar()
+//    jumpSteps(intArrayOf(2,3,1,1,4))
+    maxSubArray(intArrayOf(-2,1,-3,4,-1,2,1,-5,4))
+}
+
+// https://leetcode.com/problems/maximum-subarray/
+// time O(n)
+// space O(1)
+fun maxSubArray(nums: IntArray): Int {
+    var maxSum = nums[0]
+    var prefixSum = 0
+    for(num in nums){
+        prefixSum = if(prefixSum<0) num else prefixSum + num
+        maxSum = Math.max(maxSum, prefixSum)
+    }
+    return maxSum
+}
+
+// https://leetcode.com/problems/jump-game-ii/
+// time O(n^2)
+// space O(1)
+fun jumpSteps(nums: IntArray): Int {
+    var target = nums.size - 1
+    var steps = 0
+
+    while (target != 0) {
+        for(i in 0..target){
+            if(nums[i] + i >=target){
+                target = i
+                steps++
+                break
+            }
+        }
+    }
+    return steps
+}
+
+
+// https://leetcode.com/problems/find-center-of-star-graph/
+// time O(n)
+// space O(1)
+fun findCenterStar(edges: Array<IntArray>): Int {
+    if(edges.size<=1) return 0
+
+    var star = edges[0][0]
+    var isStarFound = false
+
+    for(i in 1 until edges.size){
+        val edge = edges[i]
+        if(edge.contains(star)){
+            isStarFound = true
+        } else if(isStarFound && !edge.contains(star)){
+            return -1
+        } else {
+            star = edges[0][1]
+            isStarFound = true
+        }
+    }
+
+    return star
+}
+
+// https://leetcode.com/problems/product-of-array-except-self/
+// time O(n)
+// space O(1) as the questions asks to return an array
+fun productExceptSelf(nums: IntArray): IntArray {
+    val answer = IntArray(nums.size)
+
+    var prefix = 1
+    for(i in 0 until nums.size) {
+        answer[i] = prefix
+        prefix *= nums[i]
+    }
+
+    var postfix = 1
+    for(i in nums.size - 1 downTo 0) {
+        answer[i] *= postfix
+        postfix *= nums[i]
+    }
+
+    return answer
+}
+
+
+// dynamic programming
+// https://leetcode.com/problems/climbing-stairs/
+// time O(n)
+// space O(1)
+fun climbStairs(n: Int): Int {
+    if(n<=2) return n
+
+    var oneStepBefore = 2
+    var twoStepsBefore = 1
+
+    for(i in 3..n){
+        val currStep = twoStepsBefore + oneStepBefore
+        twoStepsBefore = oneStepBefore
+        oneStepBefore = currStep
+    }
+    return oneStepBefore
 }
 
 // https://leetcode.com/problems/plus-one/
