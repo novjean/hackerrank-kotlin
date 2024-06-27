@@ -131,7 +131,113 @@ fun main() {
 //    productExceptSelf(intArrayOf(1,2,3,4))
 //    findCenterStar()
 //    jumpSteps(intArrayOf(2,3,1,1,4))
-    maxSubArray(intArrayOf(-2,1,-3,4,-1,2,1,-5,4))
+//    maxSubArray(intArrayOf(-2,1,-3,4,-1,2,1,-5,4))
+//    isAnagram("aacc","ccac")
+//    groupAnagrams(listOf("", "b"))
+//    maxDepth()
+}
+
+// https://leetcode.com/problems/maximum-depth-of-binary-tree/
+// time O(n)
+// space O(log n), best case O(h) where h is the height of tree, worse case O(n), so average O(logn)
+fun maxDepth(root: TreeNode?): Int {
+    if(root == null) return 0
+    return maxOf(maxDepth(root.left), maxDepth(root.right))+1
+}
+
+var resMax = 0
+fun maxDepth2(root:TreeNode?) :Int{
+    depthHelper(root, 0)
+    return resMax
+}
+fun depthHelper(root: TreeNode?, level: Int){
+    if(root == null) return
+    depthHelper(root.left, level+1)
+    resMax = Math.max(resMax, level+1)
+    depthHelper(root.right, level+1)
+}
+
+// https://leetcode.com/problems/group-anagrams/
+// time O(n.mlogm)
+// space O(n.m)
+fun groupAnagrams(strs: Array<String>): List<List<String>> {
+    val map = HashMap<String, MutableList<String>>()
+    for(str in strs){
+        val key = String(str.toCharArray().sortedArray())
+        if(!map.contains(key)){
+            map[key] = mutableListOf()
+        }
+        map[key]?.add(str)
+    }
+    return map.values.toList()
+}
+
+// time horrible O(n^3)
+fun groupAnagrams1(strs: List<String>): List<List<String>> {
+    var res = mutableListOf<MutableList<String>>()
+
+    for(i in 0 until strs.size){
+        val str = strs[i]
+
+        if(res.isEmpty()){
+            res.add(mutableListOf(str))
+        } else {
+            var isAnagramFound = false
+            for(j in 0 until res.size){
+                var list = res[j]
+                if(isAnagram(list[0], str)){
+                    res.removeAt(j)
+                    list.add(str)
+                    res.add(list)
+                    isAnagramFound = true
+                    break
+                }
+            }
+            if(!isAnagramFound) res.add(mutableListOf(str))
+        }
+    }
+    return res
+}
+
+// https://leetcode.com/problems/valid-anagram/
+// time O(m.n) , worst case remove requires iterating through the entire list each time
+// space O(n)
+fun isAnagram(s: String, t: String): Boolean {
+    var chars = t.toMutableList()
+    for(c in s){
+        if(!chars.remove(c)) return false
+    }
+
+    return chars.size == 0
+}
+
+// time O(n)
+// space O(1), since hashmap can have only 26 alphabets, thereby constant so 1
+fun isAnagram2(s: String, t: String): Boolean {
+    if(s.length != t.length) return false
+
+    var map = HashMap<Char, Int>()
+
+    for(i in 0 until s.length){
+        val cs = s[i]
+        map[cs] = map.getOrDefault(cs, 0) +1
+    }
+
+    for(i in 0 until t.length){
+        val ts = t[i]
+
+        if(map.contains(ts)){
+            var count = map.get(ts)!! -1
+            if(count >= 0){
+                map.put(ts, count)
+            } else {
+                return false
+            }
+        } else {
+            return false
+        }
+    }
+    return true
 }
 
 // https://leetcode.com/problems/maximum-sum-circular-subarray/
@@ -1595,6 +1701,12 @@ fun swap(arr: IntArray, i: Int, j: Int) {
 // time O(n)
 // space O(1)
 fun removeElement(nums: IntArray, `val`: Int): Int {
+    var k = 0
+    nums.forEach{ if(it != `val`) nums[k++] = it }
+    return k
+}
+
+fun removeElement2(nums: IntArray, `val`: Int): Int {
     var k = 0
 
     for (i in 0 until nums.size) {
