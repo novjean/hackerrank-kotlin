@@ -134,6 +134,61 @@ fun main() {
     maxSubArray(intArrayOf(-2,1,-3,4,-1,2,1,-5,4))
 }
 
+// https://leetcode.com/problems/maximum-sum-circular-subarray/
+// time O(n)
+// space O(1)
+//find minim subarray sum
+//find maximum subarray sum
+//find sum of whole array
+//if ( sum of array - min greater than max ) return res or return max
+fun maxSubarraySumCircular(nums:IntArray) : Int {
+    if(nums.size == 1) return nums[0]
+    if(nums.all { it<0 }) return nums.max()
+    var minLocal = nums[0]
+    var min = nums[0]
+    var maxLocal = nums[0]
+    var max = nums[0]
+
+    for(i in 1 until nums.size){
+        minLocal = Math.min(nums[i], nums[i] + minLocal)
+        if(minLocal<min) min = minLocal
+        maxLocal = Math.max(nums[i], nums[i]+maxLocal)
+        if(maxLocal > max) max= maxLocal
+    }
+
+    val diff = nums.sum() - min
+    return if(diff>max) diff else max
+
+}
+
+// this was failing for a specific test case tescase
+fun maxSubarraySumCircularFail(nums: IntArray): Int {
+    var len = nums.size
+    var maxSum = nums[0]
+    var prefix = 0
+    var numList: MutableList<Int> = mutableListOf()
+    nums.forEach{
+        numList.add(it)
+    }
+    var listSize = numList.size
+
+    for(i in 0 until len){
+        for(j in i until listSize){
+            val num = numList[j]
+            prefix = if(prefix<0) num else prefix+num
+            maxSum = Math.max(maxSum, prefix)
+        }
+
+        val num = nums[i]
+        numList.add(num)
+        listSize++
+        prefix = 0
+    }
+
+    return maxSum
+}
+
+
 // https://leetcode.com/problems/maximum-subarray/
 // time O(n)
 // space O(1)
