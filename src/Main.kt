@@ -136,9 +136,70 @@ fun main() {
 //    groupAnagrams(listOf("", "b"))
 //    maxDepth()
 //    buildBstTree()
-    longestConsecutive(intArrayOf(1,2,0,1))
+//    longestConsecutive(intArrayOf(1,2,0,1))
+//    maxImportance()
 }
 
+// https://leetcode.com/problems/maximum-total-importance-of-roads/
+// time O(nlogn)
+// spaceO(n)
+fun maxImportance(n: Int, roads: Array<IntArray>): Long {
+    val counts = IntArray(n)
+    var i = 1
+    for((a,b) in roads){
+        counts[a]++
+        counts[b]++
+    }
+    // The sum of the product of each city's road count and its
+    // importance (rank) is calculated. The rank starts from 1 for
+    // the city with the least roads and increments by 1 for
+    // each subsequent city in the sorted list.
+    return counts.sorted().sumOf {
+        it * (i++).toLong()
+    }
+}
+
+// https://leetcode.com/problems/spiral-matrix/
+// time O(n)
+// space O(1)
+fun spiralOrder(matrix: Array<IntArray>) : List<Int> {
+    val R = matrix.size
+    val C = matrix[0].size
+    var left = 0
+    var right = C
+    var up = 0
+    var down = R
+    val res = mutableListOf<Int>()
+
+    while(true){
+        for(i in left until right)
+            res.add(matrix[up][i])
+        up++
+        for(i in up until down){
+            res.add(matrix[i][right-1])
+        }
+        right--
+
+        if(res.size == C*R) break
+
+        for(i in right-1 downTo left){
+            res.add(matrix[down-1][i])
+        }
+        down--
+        for(i in down-1 downTo up){
+            res.add(matrix[i][left])
+        }
+        left++
+
+        if(res.size == C*R) break
+
+    }
+    return res
+}
+
+
+// time o(nlogn) because of the sort
+// space O(n)
 fun longestConsecutive(nums: IntArray): Int {
     if(nums.isEmpty()) return 0
     if(nums.size==1) return 1
@@ -161,6 +222,7 @@ fun longestConsecutive(nums: IntArray): Int {
     }
     return longest
 }
+
 // time O(n)
 // space O(log n) since balanced. O(n) to build the tree
 fun sortedArrayToBst(nums:IntArray) : TreeNode? {
