@@ -140,9 +140,25 @@ fun main() {
 //    maxImportance()
 //    containsNearbyDuplicate(intArrayOf(1,2,3,1), 3)
 
-
     // test
-    summaryRanges2(intArrayOf(0,1,2,4,5,7))
+    reverseInteger(1232)
+}
+
+// https://leetcode.com/problems/merge-intervals/
+// time O(n)
+// space O(n)
+fun mergeIntervals(intervals: Array<IntArray>): Array<IntArray> {
+    intervals.sortBy{ it[0]}
+    val res = mutableListOf<IntArray>()
+
+    intervals.forEach {
+        if(res.isEmpty() || res.last()[1] < it[0]) {
+            res.add(it)
+        } else{
+            res.last()[1]= maxOf(res.last()[1], it[1])
+        }
+    }
+    return res.toTypedArray()
 }
 
 
@@ -1397,6 +1413,25 @@ fun majorityElement2(nums: IntArray): Int {
 // https://leetcode.com/problems/remove-duplicates-from-sorted-array-ii/
 // time O(n)
 // space O(1)
+fun removeDuplicatesFromSortedArray2(nums: IntArray): Int {
+    if (nums.size <= 2) return nums.size
+
+    var slow = 2
+    for (fast in 2 until nums.size) {
+        var idx = slow-2
+        if (nums[idx] != nums[fast]){
+            nums[slow] = nums[fast]
+            slow++
+        }
+        // when it becomes equal for the third time, the slow does not move ahead
+        // and the next unique number will replace it
+    }
+
+    return slow
+}
+
+// time O(n)
+// space O(1)
 fun removeDuplicates2(nums: IntArray): Int {
     if (nums.size == 0)
         return 0
@@ -2023,7 +2058,7 @@ fun isValidParanthese(s: String): Boolean {
     for (char in s) {
         when (char) {
             '(', '{', '[' -> stack.add(char)
-            ')' -> if (stack.isEmpty() || stack.removeAt(stack.size - 1) != '(')
+            ')' -> if (stack.isEmpty() || stack.removeLast() != '(')
                 return false
 
             '}' -> if (stack.isEmpty() || stack.removeAt(stack.size - 1) != '{')
@@ -2425,6 +2460,7 @@ fun reverseInteger(num: Int): Int {
         val last = temp % 10
         temp = temp / 10
 
+        //this check is to avoid it from crashing in the reverse calc below
         if (reversed > (Integer.MAX_VALUE - last) / 10) {
             return 0
         }
@@ -2443,6 +2479,7 @@ fun reverseInteger2(x: Int): Int {
 
 ////////////////////
 
+// https://leetcode.com/problems/zigzag-conversion/
 fun zigzagConversion(s: String, numRows: Int): String {
     if (numRows == 1 || numRows >= s.length) {
         return s
