@@ -138,7 +138,28 @@ fun main() {
 //    buildBstTree()
 //    longestConsecutive(intArrayOf(1,2,0,1))
 //    maxImportance()
+//    containsNearbyDuplicate(intArrayOf(1,2,3,1), 3)
+
+
+    // test
+    summaryRanges2(intArrayOf(0,1,2,4,5,7))
 }
+
+
+// https://leetcode.com/problems/contains-duplicate-ii/
+// time O(n)
+// space O(n)
+fun containsNearbyDuplicate(nums: IntArray, k: Int): Boolean {
+    var map = HashMap<Int, Int>()
+    nums.forEachIndexed { index, it ->
+        if(map.contains(it)){
+            if(index - map[it]!! <= k) return true
+        }
+        map[it] = index
+    }
+    return false
+}
+
 
 // https://leetcode.com/problems/maximum-total-importance-of-roads/
 // time O(nlogn)
@@ -608,7 +629,7 @@ fun buildBalancedSearchTree(orderedList: List<Int>): TreeNode?{
 // https://leetcode.com/problems/summary-ranges/
 // time O(n)
 // space O(1) excluding space required for output
-fun summaryRanges(nums: IntArray): List<String> {
+fun summaryRanges2(nums: IntArray): List<String> {
     var list = mutableListOf<String>()
     if(nums.isEmpty())
         return list
@@ -642,6 +663,32 @@ fun addToList(nums: IntArray, l: Int, r: Int, list: MutableList<String>){
         val s = "${nums[l]}->${nums[r]}"
         list.add(s)
     }
+}
+
+// time(O(n)
+//spaceO(n)
+fun summaryRanges(nums: IntArray): List<String>{
+    if(nums.isEmpty()) return listOf()
+    var res = mutableListOf<String>()
+    var map = mutableMapOf<Int, Int>()
+    var l = 0
+    map[nums[l]] = nums[l]
+    for(r in 1 until nums.size){
+        var diff = Math.abs(nums[r]-nums[r-1])
+        if(diff == 1){
+            map[nums[l]] = nums[r]
+        } else {
+            l=r
+            map[nums[l]] = nums[r]
+        }
+    }
+
+    map.forEach{
+        if(it.key != it.value)
+            res.add("${it.key}->${it.value}")
+        else res.add("${it.key}")
+    }
+    return res
 }
 
 
@@ -2513,6 +2560,8 @@ fun lengthOfLongestSubstring(s: String): Int {
 }
 
 // https://leetcode.com/problems/two-sum/submissions/1280210991/
+// time O(n2)
+// space O(1)
 fun twoSum(nums: IntArray, target: Int): IntArray? {
     for (i in nums.indices) {
         for (j in i + 1 until nums.size) {
