@@ -17,14 +17,14 @@ fun evalRPN3(tokens: Array<String>): Int = Stack<Int>().run {
     pop()
 }
 
-data class Node(
+data class Node1(
     val value: Int,
     val min:Int,
-    var next: Node? = null
+    var next: Node1? = null
 )
 
 class MinStack3() {
-    var top: Node? = null
+    var top: Node1? = null
 
     fun push(value: Int) {
         var min: Int = value
@@ -34,7 +34,7 @@ class MinStack3() {
             else min = it
         }
 
-        val node = Node(value, min)
+        val node = Node1(value, min)
         node.next = top
         top = node
     }
@@ -54,8 +54,8 @@ class MinStack3() {
 
 
 fun simplifyPath3(path: String): String {
-    var directories = path.split("/")
-    var stack = Stack<String>()
+    val directories = path.split("/")
+    val stack = Stack<String>()
 
     directories.forEach {
         when{

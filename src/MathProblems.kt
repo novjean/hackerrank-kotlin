@@ -1,5 +1,18 @@
 fun main() {
 //    threeSum2(intArrayOf(-1,0,1,2,-1,-4))
+    trailingZeroes(13)
+}
+
+// https://leetcode.com/problems/factorial-trailing-zeroes/
+fun trailingZeroes(n: Int): Int {
+    var result = 0
+    var currentFactor = 5
+
+    while(currentFactor<=n){
+        result+= n/currentFactor
+        currentFactor *=5
+    }
+    return result
 }
 
 fun findMinArrowShots(points: Array<IntArray>): Int {
@@ -79,21 +92,24 @@ fun summaryRanges3(nums: IntArray): List<String>{
 }
 
 fun longestConsecutive3(nums: IntArray): Int {
-    if(nums.isEmpty()) return 0
-    if(nums.size == 1) return 1
-
-    nums.sort()
-    var list = nums.distinct()
-    var count = 1
-    var longest = 1
-
-    for(r in 1..list.size-1){
-        val diff = list[r] - list[r-1]
-        if(diff==1)
-            longest = maxOf(longest, count++)
-        else count = 1
+    val numSet = mutableSetOf<Int>()
+    for(num in nums){
+        numSet.add(num)
     }
-    return longest
+    var maxLength = 0
+    for(i in 0..<nums.size){
+        var length = 1
+        var num = nums[i]
+
+        if(!numSet.contains(num-1)){
+            while(numSet.contains(num+1)){
+                num++
+                length++
+            }
+        }
+        maxLength = maxOf(maxLength, length)
+    }
+    return maxLength
 }
 
 fun containsNearbyDuplicate3(nums: IntArray, k: Int): Boolean {

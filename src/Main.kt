@@ -139,16 +139,57 @@ fun main() {
 //    longestConsecutive(intArrayOf(1,2,0,1))
 //    maxImportance()
 //    containsNearbyDuplicate(intArrayOf(1,2,3,1), 3)
+    closestNumbers(intArrayOf(6,2,4,10))
 
     // test
-    reverseInteger(1232)
+//    reverseInteger(1232)
+}
+
+// https://leetcode.com/problems/candy/
+// time O(n)
+// space O(n)
+fun candy(ratings: IntArray): Int {
+    val candies = IntArray(ratings.size){1}
+    var index = 1
+    while(index<ratings.size){
+        if(ratings[index] > ratings[index-1])
+            candies[index] = candies[index-1] +1
+        index++
+    }
+    index = ratings.size-1
+    while(index>0){
+        if(ratings[index-1] > ratings[index]){
+            candies[index-1] = maxOf(candies[index-1], candies[index]+1)
+        }
+        index--
+    }
+    return candies.sum()
+}
+
+fun closestNumbers(nums: IntArray) {
+    nums.sort()
+
+    var minDiff = Int.MAX_VALUE
+
+    for(i in 1..nums.size-1){
+        val diff = nums[i] - nums[i-1]
+        minDiff = minOf(minDiff, diff)
+    }
+
+    for(i in 1.. nums.size-1){
+        val diff = nums[i] - nums[i-1]
+        if(diff == minDiff){
+            println("${nums[i-1]} ${nums[i]}")
+        }
+    }
+    return
 }
 
 // https://leetcode.com/problems/merge-intervals/
 // time O(n)
 // space O(n)
 fun mergeIntervals(intervals: Array<IntArray>): Array<IntArray> {
-    intervals.sortBy{ it[0]}
+    intervals.sortBy{ it[0]} // sorting it by the starting of the interval
     val res = mutableListOf<IntArray>()
 
     intervals.forEach {
@@ -159,6 +200,50 @@ fun mergeIntervals(intervals: Array<IntArray>): Array<IntArray> {
         }
     }
     return res.toTypedArray()
+}
+
+// dutch national flag sorting
+// three different values such as blue, red and white of values like 0,1,2
+//[1,0,2,1,2,0,1] -> [0,0,1,1,1,2,2]
+// time O(n)
+// space O(1)
+fun dutchFlagSort(nums:IntArray){
+    var lo = 0
+    var mid = 0
+    var high = nums.size-1
+
+    while(mid<=high){
+        when(nums[mid]){
+            0 -> {
+                val temp = nums[lo]
+                nums[lo] = nums[mid]
+                nums[mid] = temp
+                lo++
+                mid++
+                break
+            }
+            1 -> {
+                mid++
+                break
+            }
+            2 -> {
+                val temp = nums[mid]
+                nums[mid] = nums[high]
+                nums[high] = temp
+                high--
+            }
+        }
+    }
+}
+
+// reverse a linked list
+class LinkedListNode(
+    val value: Int,
+    val next: LinkedListNode){
+}
+fun reverseLinkedList(head: LinkedListNode){
+
+    var curr: LinkedListNode = head
 }
 
 
@@ -512,23 +597,7 @@ fun productExceptSelf(nums: IntArray): IntArray {
 }
 
 
-// dynamic programming
-// https://leetcode.com/problems/climbing-stairs/
-// time O(n)
-// space O(1)
-fun climbStairs(n: Int): Int {
-    if(n<=2) return n
 
-    var oneStepBefore = 2
-    var twoStepsBefore = 1
-
-    for(i in 3..n){
-        val currStep = twoStepsBefore + oneStepBefore
-        twoStepsBefore = oneStepBefore
-        oneStepBefore = currStep
-    }
-    return oneStepBefore
-}
 
 // https://leetcode.com/problems/plus-one/
 // time O(n)

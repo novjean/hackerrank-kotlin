@@ -14,8 +14,207 @@ fun main() {
 //    isPalindrome3("race a car")
 //    isSubsequence3("abc", "ahbgdc")
 //    canConstruct3("bg", "efjbdfbdgfjhhaiigfhbaejahgfbbgbjagbddfgdiaigdadhcfcj")
-    isIsomorphic3("badc", "baba")
+//    isIsomorphic3("badc", "baba")
+//    numDistinct("babgbag", "bag")
+//    generate(5)
+    minWindow("ADOBECODEBANC", "ABC")
 }
+
+// https://leetcode.com/problems/minimum-window-substring/
+fun minWindow(s: String, t: String): String {
+    val charCount = mutableMapOf<Char, Int>()
+    for(char in t){
+        charCount[char] = charCount.getOrDefault(char, 0) +1
+    }
+
+    var left = 0
+    var right = 0
+    var minLength = Int.MAX_VALUE
+    var minWindow = ""
+
+    var requiredChars = t.length
+
+    while(right<s.length){
+        val charRight = s[right]
+        if(charCount.containsKey(charRight)){
+            charCount[charRight] = charCount[charRight]!!-1
+            if(charCount[charRight]!! >= 0)
+                requiredChars--
+        }
+
+        while(requiredChars == 0){
+            if(right-left+1 < minLength){
+                minLength = right-left+1
+                minWindow = s.substring(left, right+1)
+            }
+
+            val charLeft = s[left]
+            if(charCount.containsKey(charLeft)){
+                charCount[charLeft] = charCount[charLeft]!! + 1
+                if(charCount[charLeft]!! > 0)
+                    requiredChars++
+            }
+            left++
+        }
+        right++
+    }
+
+    return minWindow
+}
+
+// O(n) time
+fun kmpPatterMatching(text: String, pattern: String): List<Int>{
+    val n = text.length
+    val m = pattern.length
+    val lps = computeLPS(pattern)
+
+    var i = 0
+    var j = 0
+    val indices = mutableListOf<Int>()
+    while (i<n){
+        if(text[i] == pattern[j]){
+            i++
+            j++
+        }
+        if(j==pattern.length){
+            indices.add(i-j)
+            j = lps[j-1]
+        } else if(i<n && text[i] != pattern[j]){
+            if(j!=0){
+                j=lps[j-1]
+            } else {
+                i++
+            }
+        }
+    }
+    return indices
+}
+
+fun computeLPS(pattern: String): IntArray{
+    val lps = IntArray(pattern.length)
+    var len = 0
+    var i = 1
+
+    while(i<pattern.length){
+        if(pattern[i] == pattern[len]){
+            len++
+            lps[i] = len
+            i++
+        } else {
+            if(len != 0){
+                len = lps[len-1]
+            } else {
+                lps[i] = 0
+                i++
+            }
+        }
+    }
+    return lps
+}
+
+// https://leetcode.com/problems/letter-combinations-of-a-phone-number/
+fun letterCombinations2(digits: String) : List<String> {
+    val result = mutableListOf<String>()
+    if(digits.isEmpty()) return result
+
+    val map = mapOf(
+        '2' to "abc",
+        '3' to "def",
+        '4' to "ghi",
+        '5' to "jkl",
+        '6' to "mno",
+        '7' to "pqrs",
+        '8' to "tuv",
+        '9' to "wxyz"
+    )
+
+    fun backtrack(index: Int, current: StringBuilder){
+
+        if(index == digits.length){
+            result.add(current.toString())
+        }
+
+        val letters = map.get(digits[index]) ?: return
+        for(letter in letters){
+            current.append(letter)
+            backtrack(index+1, current)
+            current.deleteCharAt(current.length-1)
+        }
+    }
+
+    backtrack(0, StringBuilder())
+
+    return result
+}
+
+// https://leetcode.com/problems/distinct-subsequences
+fun numDistinct(s: String, t: String): Int {
+    val m = s.length
+    val n = t.length
+
+    val dp = IntArray(n+1){0}
+    dp[0] = 1
+
+    for(i in 1..m){
+        for(j in n downTo 1){
+            if(s[i-1] == t[j-1]){
+                dp[j] += dp[j-1]
+            }
+        }
+    }
+    return dp[n]
+}
+
+// pascal triangle
+fun generatePascalTriangle(numRows: Int): List<List<Int>>{
+    val result:  MutableList<List<Int>> = mutableListOf()
+
+    repeat(numRows){
+        val list = IntArray(it+1) {1}
+
+        if(it>1){
+            for(i in 1 until list.size-1){
+                list[i] = result[it-1][i-1] + result[it-1][i]
+            }
+            result.add(list.toList())
+        }
+    }
+    return result
+}
+
+fun generate(numRows: Int): List<List<Int>> {
+    var rows = mutableListOf<List<Int>>()
+
+    val pascaleLineMap = mutableMapOf<Int, List<Int>>()
+    for(lineNumber in 1..numRows){
+        rows.add(pascaleLine(lineNumber, pascaleLineMap))
+    }
+    return rows
+}
+
+private fun pascaleLine(lineNumber: Int,
+                        pascaleLineMap: MutableMap<Int, List<Int>>): List<Int> {
+    if(lineNumber == 1) return listOf(1)
+    if(lineNumber == 2) return listOf(1,1)
+
+    if(pascaleLineMap.containsKey(lineNumber))
+        return pascaleLineMap[lineNumber]!!
+
+    val row = mutableListOf<Int>()
+    row.add(1)
+
+    val previous = pascaleLine(lineNumber-1, pascaleLineMap)
+
+    for(i in 1 until lineNumber-1){
+        row.add(previous[i-1] + previous[i])
+    }
+    row.add(1)
+
+    return row.also{
+        pascaleLineMap[lineNumber] = it
+    }
+}
+
 
 fun groupAnagrams3(strs: Array<String>): List<List<String>> {
     val map = HashMap<String, MutableList<String>>()
@@ -319,6 +518,5 @@ fun expandAroundCenterAndCount(s: String, left: Int, right: Int): Int {
     return count
 }
 
-// what is diff of scheduler and thread
-// what is scheduler computation used for and what difference with IO if they both just background
+
 
