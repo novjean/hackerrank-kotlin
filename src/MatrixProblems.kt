@@ -1,4 +1,7 @@
+import java.util.Deque
 import java.util.LinkedList
+import java.util.Queue
+import java.util.Stack
 import kotlin.math.abs
 
 class MatrixProblems {
@@ -14,19 +17,272 @@ fun main() {
 
 }
 
+// https://leetcode.com/problems/surrounded-regions/
+// time
+// space
+fun solveSurroundedRegions(board: Array<CharArray>): Unit {
+    val rows = board.size
+    val cols = board[0].size
+    val visit = Array(rows){BooleanArray(cols) {false} }
+    val q: Queue<Pair<Int,Int>> = LinkedList()
+
+    for(i in 0..<rows){
+        if(board[i][0] == 'O'){
+            q.offer(Pair(i,0))
+            visit[i][0] = true
+        }
+        if(board[i][cols-1] == 'O'){
+            q.offer(Pair(i,cols-1))
+            visit[i][cols-1] = true
+        }
+    }
+
+    for(i in 0..<cols){
+        if(board[0][i] == 'O'){
+            q.offer(Pair(0,i))
+            visit[0][i] = true
+        }
+        if(board[rows-1][i] == 'O'){
+            q.offer(Pair(rows-1, i))
+            visit[rows-1][i] = true
+        }
+    }
+
+    val directions = arrayOf(1 to 0, -1 to 0, 0 to 1, 0 to -1)
+    while(q.isNotEmpty()){
+        val (row, col) = q.poll()
+        for((dr, dc) in directions){
+            val r = row + dr
+            val c = col + dc
+            if(r in 0..<rows &&
+                c in 0..<cols &&
+                board[r][c] == '0' &&
+                !visit[r][c]){
+                q.offer(Pair(r,c))
+                visit[r][c] = true
+            }
+        }
+    }
+
+
+    for(r in 0..<rows){
+        for(c in 0..<cols){
+            if(board[r][c] == 'O' && !visit[r][c]){
+                board[r][c] = 'X'
+            }
+        }
+    }
+}
+
+// https://leetcode.com/problems/number-of-islands/
+// time O(mxn)
+// space O(min(m,n))
+fun numIslands(grid: Array<CharArray>): Int {
+    if(grid.isEmpty()) return 0
+
+    val rows = grid.size
+    val cols = grid[0].size
+    var islands = 0
+    val visit = HashSet<Pair<Int, Int>>()
+
+    fun bfs(r: Int, c: Int){
+        val queue: Queue<Pair<Int, Int>> = LinkedList()
+        queue.offer(Pair(r,c))
+        visit.add(Pair(r,c))
+
+        val directions = arrayOf(1 to 0, -1 to 0, 0 to 1, 0 to -1)
+
+        while(queue.isNotEmpty()){
+            val (row, col) = queue.poll()
+            for((dr, dc) in directions){
+                val r  = row + dr
+                val c = col + dc
+                if(r in 0..<rows-1 &&
+                    c in 0..<cols-1 &&
+                    grid[r][c] == '1' &&
+                    !visit.contains(Pair(r,c))){
+                    queue.offer(Pair(r,c))
+                    visit.add(Pair(r,c))
+                }
+            }
+        }
+    }
+
+    for(r in 0..<rows){
+        for(c in 0..<cols){
+            if(grid[r][c] == '1' && !visit.contains(Pair(r,c))){
+                bfs(r,c)
+                islands++
+            }
+        }
+    }
+
+    return islands
+}
+
+// cell color same
+// https://app.codesignal.com/arcade/intro/level-6/t97bpjfrMDZH8GJhi
+// time O(1)
+// space O(1)
+fun solution(cell1: String, cell2: String): Boolean {
+    val charDiff = abs(cell1[0] - cell2[0])
+    val numDiff = abs(cell1[1] - cell2[1])
+
+    if(charDiff%2==0 && numDiff%2 == 0){
+        return true
+    } else if(charDiff%2==1 && numDiff%2 == 1){
+        return true
+    }
+    else return false
+}
+
+// minesweeper
+// https://app.codesignal.com/arcade/intro/level-5/ZMR5n7vJbexnLrgaM
+// time O(m*n)
+// space O(m*n)
+fun minesweeper(matrix: MutableList<MutableList<Boolean>>): MutableList<MutableList<Int>> {
+    val rows = matrix.size
+    val cols = matrix[0].size
+    val result = MutableList(rows){MutableList(cols){0} }
+
+    fun isInBounds(r:Int, c:Int): Boolean{
+        return r>=0 && r<rows && c>=0 && c<cols
+    }
+
+    for(r in 0..<rows){
+        for(c in 0..<cols){
+            if(matrix[r][c]){
+                // found a mine, notify the neighbors
+                for(i in -1..1){
+                    for(j in -1..1){
+                        val newRow = r+i
+                        val newCol = c+j
+
+                        if(isInBounds(newRow, newCol) && !(i==0 && j==0)){
+                            result[newRow][newCol]++
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return result
+}
+
+// https://app.codesignal.com/arcade/intro/level-5/5xPitc3yT3dqS7XkP
+// time O(rows * cols)
+// space O(rows * cols)
+fun boxBlur(image: MutableList<MutableList<Int>>): MutableList<MutableList<Int>> {
+    val res = mutableListOf<MutableList<Int>>()
+    val rows = image.size
+    val cols = image[0].size
+
+    for(r in 1..<rows-1){
+        val blurRow = mutableListOf<Int>()
+        for(c in 1..<cols-1){
+            //println("image[r][c]: ${image[r][c]}")
+            val sum = image[r-1][c-1] + image[r-1][c] + image[r-1][c+1] + image[r][c-1] + image[r][c] + image[r][c+1] + image[r+1][c-1] + image[r+1][c] + image[r+1][c+1]
+            //println("sum: $sum")
+            val avg = (sum/9).toInt()
+            blurRow.add(avg)
+        }
+        res.add(blurRow)
+    }
+    return res
+}
+
+// https://leetcode.com/problems/word-search/
+fun exist(board: Array<CharArray>, word: String): Boolean {
+    val rows = board.size
+    val cols = board[0].size
+
+    val path = hashSetOf<Pair<Int, Int>>()
+
+    fun dfs(r: Int, c: Int, i: Int): Boolean{
+        if(i == word.length) return true
+
+        if(r<0 || c<0 || r>= rows || c>= cols ||
+            word[i] != board[r][c] ||
+            path.contains(Pair(r,c)))
+            return false
+
+        path.add(Pair(r,c))
+        val res = dfs(r+1, c,i+1) ||
+                dfs(r-1, c,i+1) ||
+                dfs(r, c+1,i+1) ||
+                dfs(r, c-1,i+1)
+        path.remove(Pair(r,c))
+        return res
+    }
+
+    for(r in 0..<rows){
+        for(c in 0..<cols){
+            if(dfs(r, c, 0))
+                return true
+        }
+    }
+    return false
+}
+
+// https://app.codesignal.com/arcade/intro/level-4/xYXfzQmnhBvEKJwXP/drafts
+fun swapCheckSimilarList(a: MutableList<Int>, b: MutableList<Int>): Boolean {
+    if(a.size!=b.size) return false
+    var swapa1 = -1
+    var swapb1 = -1
+    var swapa2 = -1
+    var swapb2 = -1
+
+    for(i in 0..<a.size){
+        if(a[i]!=b[i]){
+            if(swapa1 == -1){
+                swapa1 = a[i]
+                swapb1 = b[i]
+            } else if(swapa2 == -1){
+                swapa2 = a[i]
+                swapb2 = b[i]
+            } else {
+                // more than two swaps
+                return false
+            }
+        }
+    }
+    if(swapa1 == swapb2 && swapa2 == swapb1) return true
+    else return false
+}
+
+// https://app.codesignal.com/arcade/intro/level-4/ZCD7NQnED724bJtjN
+fun pictureFrame(picture: MutableList<String>): MutableList<String> {
+    val rows:Int = picture.size +2
+    val cols:Int = picture[0].length+2
+    var res = mutableListOf<String>()
+
+    for(i in 0..<rows){
+        var sb = StringBuilder()
+        for(j in 0..<cols){
+            if(i==0 || j==0 || i == rows-1 || j==cols-1){
+                sb.append("*")
+            } else {
+                sb.append(picture[i-1][j-1])
+            }
+        }
+        res.add(sb.toString())
+    }
+    return res
+}
+
 // https://leetcode.com/problems/search-a-2d-matrix/
 // time O(log mn)
 // space O(1)
 fun searchMatrix(matrix: Array<IntArray>, target: Int): Boolean {
-    val m = matrix.size
-    val n = matrix[0].size
+    val rows = matrix.size
+    val cols = matrix[0].size
     var left = 0
-    var right = m * n -1
+    var right = rows * cols -1
 
     while(left<=right){
         val mid = getMid(left, right)
-        val row = mid/n
-        val col = mid%n
+        val row = mid / cols
+        val col = mid % cols
 
         if(matrix[row][col] == target){
             return true
@@ -75,8 +331,8 @@ fun searchMatrix2(matrix: Array<IntArray>, target: Int): Boolean {
 // space O(n^2)
 fun shortestPathBinaryMatrix(grid: Array<IntArray>): Int {
     if(grid[0][0] == 1) return -1
-    val gridV = Array<BooleanArray>(grid.size) {
-        BooleanArray(grid.size) {false}
+    val gridV = MutableList(grid.size) {
+        MutableList<Boolean>(grid.size) {false}
     }
 
     val dir = intArrayOf(-1,0,1) // directions it can travel in
@@ -416,6 +672,45 @@ fun isValidSudoku2(board: Array<CharArray>): Boolean {
         }
     }
     return true
+}
+
+fun maxSumSubmatrix2(matrix: Array<IntArray>, k: Int): Int {
+    val rows = matrix.size
+    val cols = if(rows>0) matrix[0].size else 0
+
+    val prefixSum = Array(rows+1){IntArray(cols+1)}
+
+    for(r in 0..<rows){
+        var prefix = 0
+        for(c in 0..<cols){
+            prefix += matrix[r][c]
+            prefixSum[r+1][c+1] = prefix + prefixSum[r][c+1]
+        }
+    }
+
+    fun calculateRangeSum(row1: Int, col1: Int,
+                          row2: Int, col2: Int): Int {
+        return prefixSum[row2+1][col2+1] - prefixSum[row1][col2+1] -
+                prefixSum[row2+1][col1] + prefixSum[row1][col1]
+    }
+
+    var maxSum: Int? = null
+    overallLoop@ for(startRow in 0..<rows){
+        for(startCol in 0..<cols){
+            for(endRow in startRow..<rows){
+                for(endCol in startCol..<cols){
+                    val currentSum = calculateRangeSum(startRow, startCol, endRow, endCol)
+                    if(currentSum<=k && (maxSum==null || maxSum>currentSum)){
+                        maxSum = currentSum
+                    }
+                    if(maxSum == k){
+                        break@overallLoop
+                    }
+                }
+            }
+        }
+    }
+    return maxSum?: throw IllegalStateException()
 }
 
 fun maxSumSubmatrix(matrix: Array<IntArray>, k: Int): Int {

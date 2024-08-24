@@ -6,6 +6,44 @@ main() {
   myPow(-3,-5);
 }
 
+// https://leetcode.com/problems/candy/
+int candy(List<int> ratings){
+  List<int> candies = List.filled(ratings.length, 1);
+  int index = 1;
+  while(index<ratings.length){
+    if(candies[index] > candies[index-1]){
+      candies[index] = candies[index-1]+1;
+    }
+    index++;
+  }
+  index = ratings.length-1;
+  while(index>0){
+    if(candies[index-1] > candies[index]){
+      candies[index-1] = max(candies[index-1], candies[index]+1);
+    }
+    index--;
+  }
+  return candies.reduce((a,b)=>a+b);
+}
+
+String reverseWords(String s) {
+  List<String> words = s.split(' ')
+      .where((word) => word.isNotEmpty).toList();
+  int len = words.length;
+  StringBuffer res = StringBuffer();
+
+  for(int i=len-1;i>=0;i--){
+    String word = words[i];
+    res.write(word+ ' ');
+  }
+  return res.toString().trim();
+}
+String reverseWords2(String s) {
+  return s.split(" ")
+      .where((element)=> element.isNotEmpty)
+      .toList().reversed.join(" ");
+}
+
 bool isValidParantheses(String s){
   List<String> stack = [];
 
@@ -37,8 +75,8 @@ int minPathSum(List<List<int>> grid) {
   for(int i=0; i<rows; i++){
     for(int j = 0; j<columns; j++){
       if(i==0 && j==0) continue;
-      if(i-1<0) grid[i][j] += grid[i][j-1];
-      if(j-1<0) grid[i][j] += grid[i-1][j];
+      if(i==0) grid[i][j] += grid[i][j-1];
+      if(j==0) grid[i][j] += grid[i-1][j];
       else grid[i][j] += min(grid[i-1][j], grid[i][j-1]);
     }
   }
@@ -53,7 +91,7 @@ bool isInterleave(String s1, String s2, String s3) {
   bool dfs(int i, int j){
     if(i==s1.length && j == s2.length) return true;
     Map<int, int> key = {i:j};
-    if(dp.containsKey(key)) return dp[key]!!;
+    if(dp.containsKey(key)) return dp[key]!;
 
     if(i<s1.length && s1[i] == s3[i+j] && dfs(i+1,j)) return true;
     if(j<s2.length && s2[j] == s3[i+j] && dfs(i,j+1)) return true;

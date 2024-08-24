@@ -1,8 +1,129 @@
+import java.util.LinkedList
+import java.util.Queue
 import java.util.Stack
 
 class GraphProblems() {}
 
 fun main(){
+
+}
+
+// https://leetcode.com/problems/clone-graph/
+// time
+// space
+class NodeNeighbors(var `val`: Int) {
+    var neighbors: ArrayList<NodeNeighbors?> = ArrayList<NodeNeighbors?>()
+}
+
+fun cloneGraph(node: NodeNeighbors?): NodeNeighbors? {
+    val oldToNew = mutableMapOf<NodeNeighbors, NodeNeighbors>()
+
+    fun dfs(node: NodeNeighbors?): NodeNeighbors?{
+        if(node in oldToNew){
+            return oldToNew[node]!!
+        }
+
+        val copy = NodeNeighbors(node!!.`val`)
+        oldToNew[node] = copy
+        for(nei in node.neighbors){
+            copy.neighbors.add(dfs(nei))
+        }
+        return copy
+    }
+
+    return if(node!=null) dfs(node) else null
+}
+
+// https://leetcode.com/problems/longest-univalue-path/
+// time O(n)
+// space O(1)
+fun longestUnivaluePath(root: TreeNode?): Int{
+    var res = 0
+
+    fun dfs(node: TreeNode?): Int{
+        if(node == null) return 0
+
+        val left = dfs(node.left)
+        val right = dfs(node.right)
+
+        val leftCheck = if(node.`val` == node.left?.`val`) left+1 else 0
+        val rightCheck = if(node.`val` == node.right?.`val`) right+1 else 0
+        res = maxOf(res, leftCheck+rightCheck)
+        return maxOf(leftCheck, rightCheck)
+    }
+
+    dfs(root)
+    return res
+}
+
+// https://leetcode.com/problems/kth-smallest-element-in-a-bst/
+fun kthSmallest2(root: TreeNode?, k: Int): Int {
+    val list = mutableListOf<Int>()
+    if(root == null) return -1
+
+    fun inOrderTraversal(node: TreeNode?){
+        if(node == null)
+            return
+
+        inOrderTraversal(node.left)
+        list.add(node.`val`)
+        inOrderTraversal(node.right)
+    }
+
+    inOrderTraversal(root)
+
+    return list.get(k-1)
+}
+
+// https://leetcode.com/problems/binary-tree-right-side-view/
+fun rightSideView(root: TreeNode?): List<Int>{
+    val result = mutableListOf<Int>()
+    if(root == null) return result
+
+    val queue: Queue<TreeNode> = LinkedList()
+    queue.offer(root)
+    //queue.add(root)
+
+    while(queue.isNotEmpty()){
+        val size = queue.size
+        var rightMost = -1
+
+        for(i in 1..size){
+            val node = queue.poll()
+            // poll and remove are same only in remove exception will be thrown
+//            queue.remove()
+            rightMost = node.`val`
+
+            if(node.left!=null)
+                queue.offer(node.left)
+            if(node.right!=null)
+                queue.offer(node.right)
+        }
+        result.add(rightMost)
+    }
+
+    return result
+}
+
+// https://leetcode.com/problems/remove-duplicates-from-sorted-list-ii/?e
+fun deleteDuplicates(head: ListNode?): ListNode?{
+    val dummy = ListNode(0)
+    dummy.next = head
+    var uniq = dummy
+    var curr = head
+
+    while(curr!=null){
+        if(curr.next!=null && curr.`val` == curr.next?.`val`){
+            while(curr?.next!=null && curr?.`val` == curr?.next?.`val`){
+                curr = curr?.next
+            }
+            uniq.next = curr?.next
+        } else {
+            uniq = curr
+        }
+        curr = curr?.next
+    }
+    return dummy.next
 
 }
 
@@ -145,18 +266,27 @@ fun buildTreeInPost(inorder: IntArray, postorder: IntArray): TreeNode? {
             0, inorder.size-1, 0, postorder.size-1)
 }
 
-// https://leetcode.com/problems/populating-next-right-pointers-in-each-node-ii/
-data class Node(
-    val value: Int,
-    val left: Node?,
-    val right: Node?,
-    var next: Node?
-)
-fun populateNextRight(root: Node?): Node? {
-    var stop: Boolean
-    var n: Node? = null
+// if two binary trees are identical
+fun areIdentical(tree1: TreeNode?, tree2: TreeNode?): Boolean {
+    if(tree1 == null && tree2 == null) return true
+    if(tree1 == null || tree2 == null) return false
+    return (tree1.`val` == tree2.`val`) &&
+            areIdentical(tree1.left, tree2.left) &&
+            areIdentical(tree1.right, tree2.right)
+}
 
-    fun visit(node: Node?, level: Int){
+// https://leetcode.com/problems/populating-next-right-pointers-in-each-node-ii/
+data class Node2(
+    val value: Int,
+    val left: Node2?,
+    val right: Node2?,
+    var next: Node2?
+)
+fun populateNextRight(root: Node2?): Node2? {
+    var stop: Boolean
+    var n: Node2? = null
+
+    fun visit(node: Node2?, level: Int){
         if(node == null) return
 
         if(level==1){

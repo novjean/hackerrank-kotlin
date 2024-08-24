@@ -6,6 +6,8 @@ import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 import kotlin.collections.HashSet
+import kotlin.math.abs
+import kotlin.math.sin
 
 class TreeNode(var `val`: Int) {
     var left: TreeNode? = null
@@ -139,10 +141,97 @@ fun main() {
 //    longestConsecutive(intArrayOf(1,2,0,1))
 //    maxImportance()
 //    containsNearbyDuplicate(intArrayOf(1,2,3,1), 3)
-    closestNumbers(intArrayOf(6,2,4,10))
+//    closestNumbers(intArrayOf(6,2,4,10))
 
     // test
 //    reverseInteger(1232)
+    searchSuggestions(listOf("mobile", "moneypot", "monitor", "mouse", "mousepad"), "mouse")
+}
+
+fun searchSuggestions(repository: List<String>,
+                      customerQuery: String): List<List<String>>{
+    println("repository: " + repository.toString())
+    println("customer query: " + customerQuery)
+
+    val returnValue = mutableListOf<MutableList<String>>()
+    var sortedRepository = repository.sorted().map { it.lowercase() }
+
+    for(i in 2..customerQuery.length){
+        val tempQuery = customerQuery.substring(0, i).lowercase()
+        val singlePassResult = mutableListOf<String>()
+        for(word in sortedRepository){
+            if(word.startsWith(tempQuery) && singlePassResult.size<3){
+                singlePassResult.add(word)
+            }
+        }
+        returnValue.add(singlePassResult)
+    }
+
+    return returnValue
+}
+
+
+fun addArray(a: MutableList<Int>): MutableList<Int> {
+    val ret = mutableListOf<Int>(0,0)
+    a.forEachIndexed{index, i -> ret[index%2] += i}
+    return ret
+}
+
+
+// https://leetcode.com/problems/trapping-rain-water/
+// time O(n)
+// space O(1)
+fun trap2(height: IntArray):Int {
+    var maxLeft = 0
+    var maxRight = 0
+    val len = height.size
+    var left = 0
+    var right = len-1
+    var result = 0
+
+    while(left<right){
+        maxLeft = maxOf(maxLeft, height[left])
+        maxRight = maxOf(maxRight, height[right])
+
+        if(maxLeft<maxRight){
+            result += maxLeft - height[left]
+            left++
+        } else {
+            result += maxRight - height[right]
+            right--
+        }
+    }
+    return result
+}
+
+// time O(n)
+// space O(n)
+fun trap(height: IntArray): Int {
+    val maxLeft = IntArray(height.size){0}
+    val maxRight = IntArray(height.size){0}
+    var result = 0;
+
+    var left = 0
+    for(i in 1..<height.size){
+        if(height[i-1]>left){
+            left = height[i-1]
+        }
+        maxLeft[i] = left
+    }
+    var right = 0
+    for(i in height.size-2 downTo 0){
+        if(height[i+1]>right){
+            right = height[i+1]
+        }
+        maxRight[i] = right
+    }
+
+    for(i in 0..<height.size){
+        var trap = minOf(maxLeft[i], maxRight[i]) - height[i]
+        if(trap<0) trap = 0
+        result += trap
+    }
+    return result
 }
 
 // https://leetcode.com/problems/candy/
@@ -754,12 +843,12 @@ fun addToList(nums: IntArray, l: Int, r: Int, list: MutableList<String>){
 //spaceO(n)
 fun summaryRanges(nums: IntArray): List<String>{
     if(nums.isEmpty()) return listOf()
-    var res = mutableListOf<String>()
-    var map = mutableMapOf<Int, Int>()
+    val res = mutableListOf<String>()
+    val map = mutableMapOf<Int, Int>()
     var l = 0
     map[nums[l]] = nums[l]
     for(r in 1 until nums.size){
-        var diff = Math.abs(nums[r]-nums[r-1])
+        val diff = abs(nums[r]-nums[r-1])
         if(diff == 1){
             map[nums[l]] = nums[r]
         } else {
@@ -1447,6 +1536,34 @@ fun majorityElement(nums: IntArray): Int {
     return occ.maxBy { it.value }.key
 }
 
+// https://leetcode.com/problems/majority-element-ii/
+// time O(nlogn)
+// space O(1)
+fun majorityElement22(nums: IntArray): List<Int> {
+    val n = nums.size
+    val ratio = n/3
+    nums.sort()
+    val res = mutableListOf<Int>()
+
+    var curr = nums[0]
+    var count = 1
+    for(i in 1..<n){
+        if(curr == nums[i]){
+            count++
+        } else {
+            // num changes
+            if(count>ratio) res.add(curr)
+            curr = nums[i]
+            count = 1
+        }
+    }
+
+    // last element
+    if(count>ratio) res.add(curr)
+
+    return res
+}
+
 
 // time O(nlogn)
 // spaceO(log n)
@@ -1649,6 +1766,37 @@ fun isValidAtPosition(
         }
     }
     return true
+}
+
+fun combinationSum2(candidates: IntArray, target: Int): List<List<Int>> {
+    val res = mutableListOf<List<Int>>()
+    var comb = mutableListOf<Int>()
+    candidates.sort()
+    val size = candidates.size
+
+    // tailrec is meant to optimize the recursion process
+    tailrec fun backtrack(i: Int, target: Int){
+        if(target == 0){
+            res.add(comb.toList())
+            return
+        }
+        if(target<0 || i>=size){
+            return
+        }
+
+        comb.add(candidates[i])
+        backtrack(i+1, target-candidates[i])
+
+        var j=i
+        while(j<size && candidates[j] == candidates[i]) j++
+
+        comb.removeLast()
+        backtrack(j, target)
+    }
+
+    backtrack(0, target)
+
+    return res
 }
 
 
@@ -2313,51 +2461,49 @@ fun firstOccurenceString(haystack: String, needle: String): Int {
 }
 
 // https://leetcode.com/problems/3sum/description/
-fun threeSum(numbers: IntArray): List<List<Int>> {
-    val target = 0
-    var nums = numbers
+fun threeSum(nums: IntArray): List<List<Int>>{
+    val res = mutableListOf(listOf<Int>())
+    res.clear()
+    if(nums.size<3) return res
     nums.sort()
 
-    var s: MutableSet<List<Int>> = HashSet()
-    var output: MutableList<List<Int>> = ArrayList()
-
-    for (i in 0..nums.size - 2) {
-        var j = i + 1
-
-        var k = nums.size - 1
-
-        while (j < k) {
+    for(i in nums.indices){
+        var j = i+1
+        var k =  nums.size-1
+        while(j<k){
             val sum = nums[i] + nums[j] + nums[k]
-            if (sum == target) {
-                s.add(Arrays.asList(nums[i], nums[j], nums[k]))
+            if(sum == 0) {
+                val list = listOf(nums[i],nums[j],nums[k])
+                if(!res.contains(list)) res.add(list)
                 j++
-                k--
-            } else if (sum < target) {
-                j++
-            } else {
                 k--
             }
+            else if(sum<0) j++
+            else k--
         }
     }
 
-    output.addAll(s)
-    return output
+    return res
 }
 
 //
 fun integerToRoman(number: Int): String {
     var num = number
-    var result: StringBuilder = StringBuilder()
+    var result = StringBuilder()
 
-    var mCount = num / 1000;
+    var mCount = num / 1000
+//    (1..mCount).forEach {
+//        result = result.append("M")
+//        num -= 1000
+//    }
     while (mCount > 0) {
         result = result.append("M")
-        num = num - 1000
+        num -= 1000
         mCount--
     }
 
     val dCount = num / 100
-    if (dCount >= 1 && dCount <= 3) {
+    if (dCount in 1..3) {
         for (i in 1..dCount) {
             result = result.append("C")
         }
@@ -2365,7 +2511,7 @@ fun integerToRoman(number: Int): String {
         result = result.append("CD")
     } else if (dCount == 5) {
         result = result.append("D")
-    } else if (dCount >= 6 && dCount <= 8) {
+    } else if (dCount in 6..8) {
         result = result.append("D")
         for (i in 1..dCount - 5) {
             result = result.append("C")
@@ -2377,7 +2523,7 @@ fun integerToRoman(number: Int): String {
     num = num - (100 * dCount)
 
     val xCount = num / 10
-    if (xCount >= 1 && xCount <= 3) {
+    if (xCount in 1..3) {
         for (i in 1..xCount) {
             result = result.append("X")
         }
@@ -2385,7 +2531,7 @@ fun integerToRoman(number: Int): String {
         result = result.append("XL")
     } else if (xCount == 5) {
         result = result.append("L")
-    } else if (xCount >= 6 && xCount <= 8) {
+    } else if (xCount in 6..8) {
         result = result.append("L")
         for (i in 1..xCount - 5) {
             result = result.append("X")
@@ -2417,6 +2563,8 @@ fun integerToRoman(number: Int): String {
 }
 
 // https://leetcode.com/problems/container-with-most-water/description/
+// time O(n)
+// space O(1)
 fun maxArea(heights: IntArray): Int {
     var left = 0
     var right = heights.size - 1
@@ -2424,9 +2572,9 @@ fun maxArea(heights: IntArray): Int {
 
     while (left < right) {
         val width = right - left
-        val height = Math.min(heights[left], heights[right])
+        val height = minOf(heights[left], heights[right])
         val area = width * height
-        max = Math.max(max, area)
+        max = maxOf(max, area)
 
         if (heights[left] < heights[right]) {
             left++
@@ -2445,7 +2593,7 @@ fun isNumberPalindrome(x: Int): Boolean {
     var num = x
     var reverse = 0
 
-    while (x > 0) {
+    while (num > 0) {
         val last = num % 10
         reverse += reverse * 10 + last
 
@@ -2462,7 +2610,7 @@ fun stringToInteger(str: String): Int {
     var isNeg = false
 
 
-    for (i in 0..s.length - 1) {
+    for (i in s.indices) {
         if (i == 0) {
             if (s[i] == '-') {
                 isNeg = true;
@@ -2488,18 +2636,14 @@ fun stringToInteger(str: String): Int {
         try {
             num = nums.toString().toLong()
         } catch (e: NumberFormatException) {
-            if (isNeg) {
-                return Integer.MIN_VALUE
-            } else {
-                return Integer.MAX_VALUE
-            }
+            return if (isNeg) Integer.MIN_VALUE else Integer.MAX_VALUE
         }
     } else {
         return 0
     }
 
     if (isNeg) {
-        num = num * -1
+        num *= -1
     }
 
     if (num > Integer.MAX_VALUE) {
@@ -2517,6 +2661,28 @@ fun stringToInteger(str: String): Int {
 ///////////////////////////
 
 // https://leetcode.com/problems/reverse-integer/
+// time O(n)
+fun reverseInt(num: Int): Int{
+    var reverse = 0L
+    var sign = 1
+    var n = num
+
+    if(num<0) {
+        sign = -1
+        n *= -1
+    }
+
+    while(n>0){
+        val last = n%10
+        reverse += reverse * 10 + last
+        n /= 10
+    }
+    reverse *= sign
+
+    return if (reverse in Int.MIN_VALUE..Int.MAX_VALUE) reverse.toInt()
+    else 0
+}
+
 fun reverseInteger(num: Int): Int {
     var reversed = 0
     val sign = if (num < 0) -1 else 1
@@ -2585,44 +2751,7 @@ fun zigzagConversion(s: String, numRows: Int): String {
     return result
 }
 
-// https://leetcode.com/problems/longest-palindromic-substring/
-fun longestPalindrome(s: String): String {
-    var result = ""
 
-    if (s.length == 1) {
-        return s
-    }
-
-    for (i in 0..s.length - 1) {
-        for (j in i..s.length) {
-            val sub = s.substring(i, j)
-
-            if (isPalindrome(sub)) {
-                if (sub.length > result.length) {
-                    result = sub
-                }
-            }
-        }
-    }
-
-    println("longest palindrome: $result")
-    return result
-}
-
-fun isPalindrome(sub: String): Boolean {
-    var left = 0
-    var right = sub.length - 1
-
-    while (left < right) {
-        if (sub[left] == sub[right]) {
-            left++
-            right--
-        } else {
-            return false
-        }
-    }
-    return true
-}
 
 // https://leetcode.com/problems/median-of-two-sorted-arrays/description/
 fun findMedianSortedArrays(nums1: IntArray, nums2: IntArray): Double {
@@ -2642,28 +2771,6 @@ fun findMedianSortedArrays(nums1: IntArray, nums2: IntArray): Double {
 }
 
 
-fun lengthOfLongestSubstring(s: String): Int {
-    val set: MutableSet<Char> = HashSet()
-    var result = 0
-    var left = 0
-    var right = 0
-
-    while (right < s.length) {
-        if (set.contains(s[right])) {
-            set.remove(s[left])
-            left++
-        } else {
-            set.add(s[right])
-            right++
-            if (set.size > result) {
-                result = set.size
-            }
-        }
-    }
-
-    println("longest substring size: " + result)
-    return result
-}
 
 // https://leetcode.com/problems/two-sum/submissions/1280210991/
 // time O(n2)

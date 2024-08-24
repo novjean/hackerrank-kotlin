@@ -25,6 +25,8 @@ fun isInterleave(s1: String, s2: String, s3: String): Boolean {
 }
 
 // https://leetcode.com/problems/house-robber/
+// time O(n)
+// space O(n)
 fun rob(nums: IntArray): Int {
     if(nums.isEmpty()) return 0 // no house to rob
     if(nums.size == 1) return nums[0] // only one house to rob
@@ -44,6 +46,10 @@ fun rob(nums: IntArray): Int {
 // https://leetcode.com/problems/coin-change/
 // time O(coins*amount)
 // space O(coins*amount)
+fun coinChange2(coins: IntArray, amount: Int): Int{
+
+}
+
 fun coinChange(coins: IntArray, amount: Int): Int {
     val dp = IntArray(amount+1) {amount+1}
     dp[0] = 0

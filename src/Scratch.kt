@@ -1,6 +1,107 @@
 import jdk.jfr.DataAmount
+import java.util.PriorityQueue
+import kotlin.math.abs
 
 class Scratch {
+
+}
+
+
+
+class MedianFinder() {
+    private val list = mutableListOf<Int>()
+
+    fun addNum(num: Int){
+        val insertionPoint = list.binarySearch(num)
+        // if num is not found in list, the insertion point
+        // would be where the number should be inserted but negative
+        val index = if(insertionPoint<0) -insertionPoint-1 else insertionPoint
+        list.add(index, num)
+    }
+
+    fun findMedian(): Double {
+        if(list.isEmpty()) return 0.0
+
+        val mid = list.lastIndex/2
+        return if (list.size%2==0) (list[mid].toDouble() + list[mid+1])/2
+        else list[mid].toDouble()
+    }
+}
+
+class MySet<T>(){
+    val set = mutableListOf<T>()
+
+    fun add(element: T): Boolean{
+        if(!set.contains(element)) {
+            set.add(element)
+            return true
+        }
+        return false
+    }
+
+    fun remove(element: T): Boolean{
+        return set.remove(element)
+    }
+
+    fun contains(element: T): Boolean{
+        return set.contains(element)
+    }
+
+    fun size(): Int{
+        return set.size
+    }
+
+    fun isEmpty(): Boolean{
+        return set.isEmpty()
+    }
+
+    fun clear(){
+        set.clear()
+    }
+
+    fun toList(): List<T>{
+        return set.toList()
+    }
+}
+
+// https://leetcode.com/problems/range-sum-query-immutable/
+// time O(n)
+// space O(n)
+class NumArray(val nums: IntArray) {
+    private val prefixSum = IntArray(nums.size){0}
+    init {
+        prefixSum[0] = nums[0]
+        for(i in 1..<nums.size){
+            prefixSum[i] = prefixSum[i-1] + nums[i]
+        }
+    }
+    fun sumRange(left: Int, right: Int): Int {
+        return prefixSum[right] - prefixSum[left] + nums[left]
+    }
+}
+
+class NumMatrix(val matrix: Array<IntArray>) {
+    val rows = matrix.size
+    val cols = if(rows>0) matrix[0].size else 0
+    val prefixSum = Array(rows){IntArray(cols)}
+
+    init {
+        for(r in 0..<rows){
+            var prefix = 0
+            for(c in 0..<cols){
+                prefix+=matrix[r][c]
+                prefixSum[r+1][c+1] = prefix + prefixSum[r][c+1]
+            }
+        }
+    }
+
+    fun sumRegion(row1: Int, col1: Int, row2: Int, col2: Int): Int {
+        // the last prefixSum being added is the top left and we remove that twice
+        // so we add that one value
+        return prefixSum[row2+1][col2+1] - prefixSum[row1][col2+1] -
+                prefixSum[row2+1][col1] + prefixSum[row1][col1]
+    }
+
 }
 
 fun main(){
@@ -8,7 +109,243 @@ fun main(){
 //    canCompleteCircuit2(intArrayOf(1,2,3,4,5), intArrayOf(3,4,5,1,2))
 //    lengthOfLIS(intArrayOf(0,1,0,3,2,3))
 
-    coinChange(intArrayOf(1, 2, 5), 11)
+//    coinChange(intArrayOf(1, 2, 5), 11)
+//    repeatedSubstringPattern("abab")
+//    rotateLeft(2, intArrayOf(1,2,3,4,5))
+
+//    jumping(mutableListOf(1,4,10,6,2))
+//    containerMostWater(intArrayOf(1,8,6,2,5,4,8,3,7))
+//    kthLargestItem(intArrayOf(3,2,3,1,2,4,5,5,6), 4)
+//    findMaxLength(intArrayOf(0,1,1,0,1,1,1,0))
+
+    interestRate(100, 20, 170)
+}
+
+// https://app.codesignal.com/arcade/intro/level-7/8PxjMSncp9ApA4DAb
+fun interestRate(deposit: Int, rate: Int, threshold: Int): Int {
+    var curr = deposit.toDouble()
+    val r = rate/100.0
+    var numYears = 0
+    while(curr<threshold){
+        curr += (curr * r)
+        numYears++
+    }
+    return numYears
+}
+
+fun kthLargestItem(nums: IntArray, k: Int): Int{
+       val minHeap = PriorityQueue<Int>()
+       for(num in nums){
+           minHeap.add(num)
+           if(minHeap.size>k){
+               minHeap.remove()
+           }
+       }
+    return minHeap.peek()
+}
+
+// https://leetcode.com/problems/contiguous-array/
+// time O(n)
+// space O(n)
+fun findMaxLength(nums:IntArray): Int{
+    val mp = HashMap<Int, Int>()
+    var sum = 0
+    var subArrayLength = 0
+
+    for(i in nums.indices){
+        sum += if(nums[i] == 0) -1 else 1
+
+        if(sum == 0){
+            subArrayLength = i+1
+        }else if(mp.contains(sum)){
+            subArrayLength = maxOf(subArrayLength, i-mp[sum]!!)
+        } else {
+            mp[sum] = i
+        }
+    }
+
+    return subArrayLength
+}
+
+
+// https://leetcode.com/problems/minimum-size-subarray-sum/
+// time O(n)
+fun minSubArrayLen2(target: Int, nums: IntArray): Int {
+    var minLength = Int.MAX_VALUE
+    var left = 0
+    var sum = 0
+
+    // sliding window
+    for(right in nums.indices){
+        sum += nums[right] // prefixSum
+
+        while(sum>=target){
+            minLength = minOf(minLength, right-left+1)
+            sum-=nums[left]
+            left++
+        }
+    }
+    return if(minLength == Int.MAX_VALUE) 0 else minLength
+}
+
+
+fun mergeThreeSortedArrays(arr1: IntArray, arr2: IntArray, arr3: IntArray): IntArray {
+    var result = mutableListOf<Int>()
+    var i =0
+    var j =0
+    var k = 0
+
+    while(i<arr1.size || j<arr2.size || k<arr3.size){
+        val va1 = if(i<arr1.size) arr1[i] else Int.MAX_VALUE
+        val va2 = if(i<arr2.size) arr2[i] else Int.MAX_VALUE
+        val va3 = if(i<arr3.size) arr3[i] else Int.MAX_VALUE
+
+        if(va1<=va2 && va1<=va3){
+            result.add(va1)
+            i++
+        } else if(va2<=va1 && va2<=va3){
+            result.add(va2)
+            j++
+        }  else {
+            result.add(va3)
+            k++
+        }
+    }
+    return result.toIntArray()
+}
+
+// https://leetcode.com/problems/powx-n/
+fun myPow(x: Double, n: Int): Double {
+    val signBiasX = if(n<0) 1.0/x else x
+
+    fun exponent(base: Double, exp: Int): Double{
+        when(exp){
+            0 -> return 1.0
+            1 -> return base
+            else -> {
+                val res = exponent(base, exp/2)
+                return if(exp%2 == 0) res * res
+                else base * res * res
+            }
+        }
+    }
+
+    return exponent(signBiasX, abs(n))
+}
+
+// replace element in array
+fun solution(list: MutableList<Int>, element: Int, substitute: Int): MutableList<Int>{
+    list.forEachIndexed{i, it -> if(it==element){list[i] = substitute} }
+    return list
+}
+
+// https://app.codesignal.com/arcade/intro/level-5/XC9Q2DhRRKQrfLhb5
+fun jumping2(inputArray: MutableList<Int>): Int {
+    var i =0
+    while(true){
+        i++
+        if(inputArray.all{ it%i != 0}){
+            return i
+        }
+    }
+}
+
+fun jumping(inputArray: MutableList<Int>): Int {
+    inputArray.sort()
+    val high = inputArray.last()
+    for(i in 2..<high){
+        var cur = i
+        var mul = 1
+        while(cur<=high){
+            if(inputArray.contains(cur)) break
+            cur = i * ++mul
+        }
+        if(cur>high) return i
+    }
+    return high+1
+}
+
+fun rotateLeft2(d: Int, arr: IntArray): IntArray{
+    val n = arr.size
+    // To handle cases where d > n
+    val rotations = d % n
+
+    // Split and concatenate the array
+    return arr.sliceArray(rotations until n) + arr.sliceArray(0 until rotations)
+}
+
+fun rotateLeft(d: Int, arr: IntArray): IntArray {
+    // Write your code here
+    val n = arr.size
+
+    for(i in 0..n/2){
+        var temp = arr[i]
+        arr[i] = arr[n-i-1]
+        arr[n-i-1] = temp
+    }
+
+    val firstHalfSize = n-d
+
+    for(i in 0..<firstHalfSize/2){
+        var temp = arr[i]
+        arr[i] = arr[firstHalfSize-i-1]
+        arr[firstHalfSize-i-1] = temp
+    }
+
+    println("1st:" + arr.toList().toString())
+
+    val secondHalfSize = n - firstHalfSize
+
+    for(i in 0..<secondHalfSize/2){
+        var temp = arr[i+firstHalfSize]
+        arr[i+firstHalfSize] = arr[n-i-1]
+        arr[n-i-1] = temp
+    }
+    println("2nd:" + arr.toList().toString())
+
+    return arr
+}
+
+// time O(n)
+fun repeatedSubstringPatternLPS(s: String): Boolean {
+    val n = s.length
+    val lps = IntArray(n)
+    var len = 0
+    var i = 1
+
+    while(i<n){
+        if(s[i] == s[len]){
+            len++
+            lps[i] = len
+            i++
+        } else {
+            if(len!=0){
+                len = lps[len-1]
+            } else{
+                lps[i]=0
+                i++
+            }
+        }
+    }
+
+    val lengthOfPattern = lps[n-1]
+    return lengthOfPattern>0 && n % (n-lengthOfPattern)==0
+}
+
+fun repeatedSubstringPattern(s: String): Boolean {
+    val len = s.length
+
+    for(i in 1..len/2){
+        val sub = s.substring(0,i)
+        var j = i
+        while(j<=len-i){
+            val sub2 = s.substring(j, j+i)
+            if(sub != sub2) break
+            j = j+i
+            if(j==len) return true
+        }
+    }
+    return false
 }
 
 fun mergeIntervals5(intervals: Array<IntArray>): Array<IntArray> {

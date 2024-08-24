@@ -1,9 +1,80 @@
+import java.util.LinkedList
+import java.util.Queue
+
 fun main() {
 //    threeSum2(intArrayOf(-1,0,1,2,-1,-4))
-    trailingZeroes(13)
+//    trailingZeroes(13)
+//    twoSum4(intArrayOf(1,2,3,4), 3)
+    // calcEquation()
+}
+
+// https://leetcode.com/problems/evaluate-division/
+private val graph = mutableMapOf<String, MutableMap<String, Double>>()
+
+// time O(E+Q * (V+E)) where Q is the num of queries
+// space O(E+V)
+fun calcEquation(equations: List<List<String>>,
+                 values: DoubleArray,
+                 queries: List<List<String>>): DoubleArray {
+    buildGraph(equations, values)
+    return queries.map { (numerator, denominator) ->
+        bfs(numerator, denominator)
+    }.toDoubleArray()
+}
+
+// time O(V+E) where V is num of nodes and E is num of edges
+// space O(V)
+private fun bfs(start: String, end: String): Double {
+    if(!graph.containsKey(start) || !graph.containsKey(end)) return -1.0
+
+    val queue: Queue<Pair<String, Double>> = LinkedList()
+    queue.add(Pair(start, 1.0))
+    val visited = mutableListOf<String>()
+    visited.add(start)
+
+    while(queue.isNotEmpty()){
+        val (node, weight) = queue.poll()
+        if(node == end) return weight
+        graph[node]?.forEach{ (neighbor, value) ->
+            if(!visited.contains(neighbor)){
+                visited.add(neighbor)
+                queue.add(Pair(neighbor, weight * value))
+            }
+        }
+    }
+    return -1.0
+}
+
+// time O(E) is the number of equations
+// space O(E)
+fun buildGraph(equations: List<List<String>>, values: DoubleArray){
+    equations.forEachIndexed{ index, (numerator, denominator) ->
+        val value = values[index]
+        graph.getOrPut(numerator) { mutableMapOf() }[denominator] = value
+        graph.getOrPut(denominator) { mutableMapOf() } [numerator] = 1.0/value
+    }
+}
+
+// https://leetcode.com/problems/number-complement/
+fun findComplementBitManipulation(num:Int): Int{
+    var res: Long = 1
+    while(res<=num) res = res shl 1
+    return (res-1).toInt() xor num
+}
+
+// time O(n) n is length of num
+// space O(n)
+fun findComplement(num: Int): Int {
+    val str = StringBuilder()
+    for(d in num.toString(2)){
+        str.append(if(d=='1')'0' else '1')
+    }
+    return str.toString().toInt(2) // convert the binary complement string back to an integer
 }
 
 // https://leetcode.com/problems/factorial-trailing-zeroes/
+// time O(log5(n)) where base of the algorithm is 5
+// space O(1)
 fun trailingZeroes(n: Int): Int {
     var result = 0
     var currentFactor = 5
@@ -39,7 +110,7 @@ fun insertInterval(intervals: Array<IntArray>, newInterval: IntArray): Array<Int
         ans.add(intervals[counter++])
 
     while(counter<intervals.size && intervals[counter][0] <= end){
-        start = Math.min(intervals[counter][0], start)
+        start = minOf(intervals[counter][0], start)
         end = maxOf(intervals[counter][1], end)
         counter++
     }
@@ -54,7 +125,7 @@ fun insertInterval(intervals: Array<IntArray>, newInterval: IntArray): Array<Int
 
 fun mergeIntervals3(intervals: Array<IntArray>): Array<IntArray> {
     intervals.sortBy{it[0]}
-    var result : MutableList<IntArray> = mutableListOf()
+    val result : MutableList<IntArray> = mutableListOf()
 
     intervals.forEach {
         if(result.isEmpty() || result.last()[1] < it[0]){
@@ -68,7 +139,7 @@ fun mergeIntervals3(intervals: Array<IntArray>): Array<IntArray> {
 
 fun summaryRanges3(nums: IntArray): List<String>{
     if(nums.isEmpty()) return emptyList()
-    var list: MutableList<String> = mutableListOf()
+    val list: MutableList<String> = mutableListOf()
     var l = 0
     list.add(nums[0].toString())
 
@@ -91,13 +162,14 @@ fun summaryRanges3(nums: IntArray): List<String>{
     return list
 }
 
+// time O(n)
+// space O(n)
 fun longestConsecutive3(nums: IntArray): Int {
     val numSet = mutableSetOf<Int>()
-    for(num in nums){
-        numSet.add(num)
-    }
+    nums.forEach { numSet.add(it) }
+
     var maxLength = 0
-    for(i in 0..<nums.size){
+    for(i in nums.indices){
         var length = 1
         var num = nums[i]
 
@@ -112,10 +184,12 @@ fun longestConsecutive3(nums: IntArray): Int {
     return maxLength
 }
 
+// time O(n)
+// space O(n)
 fun containsNearbyDuplicate3(nums: IntArray, k: Int): Boolean {
-    var map: MutableMap<Int, Int> = mutableMapOf()
+    val map: MutableMap<Int, Int> = mutableMapOf()
 
-    nums.forEachIndexed {index, it->
+    nums.forEachIndexed { index, it->
         if(!map.contains(it)){
             map[it] = index
         } else {
@@ -129,15 +203,15 @@ fun containsNearbyDuplicate3(nums: IntArray, k: Int): Boolean {
 
 fun isHappy(number: Int): Boolean {
     var num = number
-    var sum:Long = 0
+    var sum = 0L
 
     var i = 0
 
     while(i<10){
         while(num>0){
-            var n = num % 10
+            val n = num % 10
             sum += n*n
-            num = num/10
+            num /= 10
         }
 
         if(sum == 1L) return true
@@ -147,43 +221,6 @@ fun isHappy(number: Int): Boolean {
         i++
     }
     return false
-}
-
-fun minSubArrayLen3(target: Int, nums: IntArray): Int {
-    var l = 0
-    var res = Int.MAX_VALUE
-    var s = 0
-
-    for(r in nums.indices){
-        s += nums[r]
-
-        while(s>= target){
-            res = minOf(res, r-l+1)
-            s -= nums[l++]
-        }
-    }
-    return if(res!=Int.MAX_VALUE) res else 0
-}
-
-fun minSubArrayLenBruteForce(target: Int, nums: IntArray): Int {
-    if(nums.isEmpty()) return -1
-    var i = 0
-    var j = 1
-    var sum = 0
-    var min = nums.size+1
-
-    for(i in 0.. nums.size-1){
-        sum = 0
-        for(j in i..nums.size-1){
-            sum+= nums[j]
-            if(sum>=target){
-                min = minOf(min, j-i )
-                break
-            }
-        }
-    }
-    return if(min == nums.size+1) 0 else min
-
 }
 
 fun threeSum3(numbers: IntArray): List<List<Int>> {
@@ -249,6 +286,40 @@ fun twoSum3(nums: IntArray, target: Int): IntArray {
         } else {
             i++
         }
+    }
+    return intArrayOf(0,0)
+}
+
+// square root of a number
+fun mySqrt(x: Int): Int{
+    if(x == 0 || x == 1) return x
+
+    var left = 1
+    var right = x
+    var result = 0 //9, 4
+
+    while(left<=right){
+        val mid = left +(right-left)/2 //5, 2
+        if(mid<= x/mid){ //5<4
+            result = mid
+            left = mid+1
+        } else {
+            right = mid-1 //4
+        }
+    }
+    return result
+}
+
+// time O(1)
+fun twoSum4(nums: IntArray, target: Int): IntArray{
+    val map = HashMap<Int, Int>()
+    for(i in 0..<nums.size){
+        val complement = target - nums[i]
+        if(map.containsKey(complement)){
+            print("map contains key of $complement")
+            return intArrayOf(map[complement]!!, i+1)
+        }
+        map[complement] = nums[i]
     }
     return intArrayOf(0,0)
 }
